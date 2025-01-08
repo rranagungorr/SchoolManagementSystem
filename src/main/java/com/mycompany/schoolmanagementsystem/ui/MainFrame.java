@@ -12,16 +12,35 @@ import javax.swing.JPanel;
  */
 public class MainFrame extends javax.swing.JFrame {
 
+    /**
+     * @return the account
+     */
+    public Object getAccount() {
+        return account;
+    }
+
+    /**
+     * @param account the account to set
+     */
+    public void setAccount(Object account) {
+        this.account = account;
+    }
+
     public static MainFrame instance;
 
     private Object account;
     
+    private final LoginPanel loginPanel;
+    
     public MainFrame() {
         initComponents();
 
-        this.add(mainPanel);
+        loginPanel = new LoginPanel();
         
-        this.setPreferredSize(new Dimension(1200, 600));
+        this.add(mainPanel);
+        setPage(loginPanel);
+        
+        this.setSize(new Dimension(1200, 600));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
         
@@ -35,26 +54,18 @@ public class MainFrame extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1200, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 600, Short.MAX_VALUE)
-        );
+        mainPanel.setBackground(new java.awt.Color(225, 225, 225));
+        mainPanel.setLayout(new java.awt.GridLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
         );
 
         pack();
@@ -95,6 +106,10 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
+    
+    public LoginPanel getLoginPanel(){
+        return loginPanel;
+    }
 
     public final void setPage(JPanel page) {
         mainPanel.removeAll();
@@ -109,7 +124,7 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void logout() {
-        account = null;
+        setAccount(null);
     }
 
     public void login() {
