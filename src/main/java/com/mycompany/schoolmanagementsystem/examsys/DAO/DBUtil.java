@@ -4,10 +4,21 @@
  */
 package com.mycompany.schoolmanagementsystem.examsys.DAO;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 /**
  *
  * @author PC
  */
 class DBUtil {
-    
+
+    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=YourDatabaseName";
+    private static final String USER = "yourUsername";
+    private static final String PASSWORD = "yourPassword";
+
+    public static Connection getConnection() throws SQLException {
+        return DriverManager.getConnection(URL, USER, PASSWORD);
+    }
 }

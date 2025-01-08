@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package com.mycompany.schoolmanagementsystem.examsys.DAO;
+
 import com.mycompany.schoolmanagementsystem.examsys.StudentCourse;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
