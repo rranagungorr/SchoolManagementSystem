@@ -107,11 +107,9 @@ public class CourseDAO {
             while (rs.next()) {
                 Course c = new Course();
                 c.setCourseID(rs.getInt("CourseID"));
-<<<<<<< Updated upstream
+
                 c.setCourseName(rs.getString("CourseName"));
-=======
-                c.setCourseName(rs.getString("course_name"));
->>>>>>> Stashed changes
+
                 courseList.add(c);
             }
         } catch (SQLException e) {

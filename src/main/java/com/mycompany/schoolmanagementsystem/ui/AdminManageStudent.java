@@ -34,7 +34,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
      */
     public AdminManageStudent() {
         initComponents();
-        
+
         listModel = new DefaultListModel<>();
         this.departmentDAO = new DepartmentDAO();
         departmentJList.setModel(listModel);
@@ -51,17 +51,16 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         };
         studentsTable.setModel(tableModel);
 
-
         studentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
+
         loadStudents();
 
     }
-    
+
     private String generateRandomPassword() {
-    int randomNumber = 10000 + (int)(Math.random() * 90000); // 5 basamaklı rastgele bir sayı
-    return String.valueOf(randomNumber);
-}
+        int randomNumber = 10000 + (int) (Math.random() * 90000); // 5 basamaklı rastgele bir sayı
+        return String.valueOf(randomNumber);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -368,8 +367,6 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         }
     }
 
-
-
     private String getDeptName(int deptID) {
         Department d = departmentDAO.getByID(deptID);
         return d != null ? d.getDepartmentName() : "Unknown";
@@ -404,103 +401,57 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     private void addStudentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentBtnActionPerformed
 
         // TODO add your handling code here:
-        // 1) Form alanlarını al
-    String name = studentNameField.getText().trim();
-    String surname = surnameField.getText().trim();
-    String creditsStr = creditField.getText().trim();
-    String username = usernameField.getText().trim();  // YENİ
-    String password = passwordField.getText().trim();  // YENİ
+        String name = studentNameField.getText().trim();
+        String surname = surnameField.getText().trim();
+        String creditsStr = creditField.getText().trim();
+        Department dept = departmentJList.getSelectedValue();
+        Object selectedGender = genderComboBox.getSelectedItem();
+        Object selectedClassLevel = classLevelComboBox.getSelectedItem();
 
-    // (Opsiyonel) e-posta alanı var ise
-    // String email = emailField.getText().trim();
+        // Alanların kontrolü
+        if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty() || dept == null || selectedGender == null || selectedClassLevel == null) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            return;
+        }
 
-    // 2) Departman seçimi
-    if (departmentJList.getSelectedIndex() == -1) {
-        JOptionPane.showMessageDialog(this, "Please select a department from the list.");
-        return;
-    }
-    Department dept = listModel.getElementAt(departmentJList.getSelectedIndex());
+        // Credits'in sayı olup olmadığını kontrol et
+        int credits;
+        try {
+            credits = Integer.parseInt(creditsStr);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Credits must be a valid integer.");
+            return;
+        }
 
-    // 3) Boş alan kontrolü
-    if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty() 
-            || username.isEmpty() || password.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields (including username/password).");
-        return;
-    }
+        // Seçimler
+        String gender = selectedGender.toString(); // Gender seçimi
+        int classLevel;
+        try {
+            classLevel = Integer.parseInt(selectedClassLevel.toString()); // ClassLevel seçimi
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Class level must be a valid integer.");
+            return;
+        }
 
-    // 4) Kredi alanını integer parse et
+        // Yeni bir Student nesnesi oluştur ve gerekli alanları doldur
+        Student s = new Student();
+        s.setName(name);
+        s.setSurname(surname);
+        s.setCredits(credits);
+        s.setClassLevel(classLevel);
+        s.setGender(gender);
+        s.setEmail(name.toLowerCase() + "." + surname.toLowerCase() + "@example.com"); // Basit e-posta
+        s.setUsername(name.toLowerCase() + surname.toLowerCase()); // Kullanıcı adı
+        s.setPassword(generateRandomPassword()); // Rastgele şifre
+        s.setDepartmentID(dept.getDepartmentID());
 
-                                                   
-    String name = studentNameField.getText().trim();
-    String surname = surnameField.getText().trim();
-    String creditsStr = creditField.getText().trim();
-    Department dept = departmentJList.getSelectedValue();
-    Object selectedGender = genderComboBox.getSelectedItem();
-    Object selectedClassLevel = classLevelComboBox.getSelectedItem();
-
-    // Alanların kontrolü
-    if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty() || dept == null || selectedGender == null || selectedClassLevel == null) {
-        JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-        return;
-    }
-
-    // Credits'in sayı olup olmadığını kontrol et
-
-    int credits;
-    try {
-        credits = Integer.parseInt(creditsStr);
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Credits must be a valid integer.");
-        return;
-    }
-
-
-    // 5) Student nesnesi oluşturup değerleri set et
-
-    // Seçimler
-    String gender = selectedGender.toString(); // Gender seçimi
-    int classLevel;
-    try {
-        classLevel = Integer.parseInt(selectedClassLevel.toString()); // ClassLevel seçimi
-    } catch (NumberFormatException ex) {
-        JOptionPane.showMessageDialog(this, "Class level must be a valid integer.");
-        return;
-    }
-
-    // Yeni bir Student nesnesi oluştur ve gerekli alanları doldur
-
-    Student s = new Student();
-    s.setName(name);
-    s.setSurname(surname);
-    s.setCredits(credits);
-    s.setGender("N/A");    // sabit veya cinsiyet alanınız varsa ordan alabilirsiniz
-    s.setEmail("example@domain.com");  // isterseniz emailField'dan alabilirsiniz
-    s.setClassLevel(2);   // her öğrenci için 2
-    s.setUsername(username);  // kullanıcıdan alındı
-    s.setPassword(password);  // kullanıcıdan alındı
-    s.setDepartmentID(dept.getDepartmentID());
-
-    // 6) adminService ile DB'ye ekle
-    int newID = adminService.createStudent(s);
-    if (newID > 0) {
-        JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
-        loadStudents();  // tabloyu güncellemek için
-
-    s.setClassLevel(classLevel);
-    s.setGender(gender);
-    s.setEmail(name.toLowerCase() + "." + surname.toLowerCase() + "@example.com"); // Basit e-posta
-    s.setUsername(name.toLowerCase() + surname.toLowerCase()); // Kullanıcı adı
-    s.setPassword(generateRandomPassword()); // Rastgele şifre
-    s.setDepartmentID(dept.getDepartmentID());
-
-    int newID = adminService.createStudent(s);
-    if (newID > 0) {
-        JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
-        loadStudents(); // Öğrenciler tablosunu güncelle
-
-    } else {
-        JOptionPane.showMessageDialog(this, "Failed to add student.");
-    }
+        int newID = adminService.createStudent(s);
+        if (newID > 0) {
+            JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
+            loadStudents(); // Öğrenciler tablosunu güncelle
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to add student.");
+        }
 
     }//GEN-LAST:event_addStudentBtnActionPerformed
 
@@ -510,10 +461,9 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        
-       MainFrame.instance.setPage(MainFrame.instance.getAdminMainScreen());
-    }//GEN-LAST:event_jButton1ActionPerformed
 
+        MainFrame.instance.setPage(MainFrame.instance.getAdminMainScreen());
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void loadDepartments() {
         // 1) Retrieve the list of all departments
@@ -554,7 +504,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     // End of variables declaration//GEN-END:variables
 
     @Override
-public void onPageSetted() {
+    public void onPageSetted() {
         loadDepartments();
 
     }

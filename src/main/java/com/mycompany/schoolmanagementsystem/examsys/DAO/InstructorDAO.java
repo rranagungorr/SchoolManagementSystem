@@ -109,8 +109,6 @@ public class InstructorDAO {
         // Örnek tablo adı: Instructors
         // Örnek sütunlar: InstructorID, Name
 
-        String sql = "SELECT InstructorID, Name FROM Instructors"; 
-        // Adjust column names, table name to match your DB
 
 
         try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
