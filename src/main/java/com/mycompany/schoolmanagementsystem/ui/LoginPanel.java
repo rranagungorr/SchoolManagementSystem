@@ -157,7 +157,7 @@ public class LoginPanel extends javax.swing.JPanel implements IPage{
         
         if (account != null) {
             MainFrame.instance.setAccount(account);
-            MainFrame.instance.setPage(this);
+            MainFrame.instance.login();
         } else {
             JOptionPane.showMessageDialog(
                     MainFrame.instance,

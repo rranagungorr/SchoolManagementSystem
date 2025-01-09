@@ -37,4 +37,9 @@ public class Department {
         this.departmentName = departmentName;
     }
 
+    @Override
+    public String toString() {
+        // This ensures the JList will display the name instead of the default object reference
+        return departmentName;
+    }
 }

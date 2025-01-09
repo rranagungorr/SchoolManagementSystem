@@ -4,6 +4,7 @@
  */
 package com.mycompany.schoolmanagementsystem.examsys.DAO;
 
+import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.examsys.StudentExam;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -13,16 +14,17 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author PC
  */
 public class StudentExamDAO {
+
     // CREATE
     public int create(StudentExam studentExam) {
         String sql = "INSERT INTO StudentExams (StudentID, ExamID) VALUES (?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, studentExam.getStudentID());
             pstmt.setInt(2, studentExam.getExamID());
 
@@ -43,8 +45,7 @@ public class StudentExamDAO {
     // READ by ID
     public StudentExam getByID(int studentExamID) {
         String sql = "SELECT * FROM StudentExams WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExamID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -65,9 +66,7 @@ public class StudentExamDAO {
     public List<StudentExam> getAll() {
         List<StudentExam> list = new ArrayList<>();
         String sql = "SELECT * FROM StudentExams";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 StudentExam se = new StudentExam();
                 se.setStudentExamID(rs.getInt("StudentExamID"));
@@ -86,8 +85,7 @@ public class StudentExamDAO {
     // but let's provide a simple method for completeness.
     public boolean update(StudentExam studentExam) {
         String sql = "UPDATE StudentExams SET StudentID = ?, ExamID = ? WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExam.getStudentID());
             pstmt.setInt(2, studentExam.getExamID());
             pstmt.setInt(3, studentExam.getStudentExamID());
@@ -103,8 +101,7 @@ public class StudentExamDAO {
     // DELETE
     public boolean delete(int studentExamID) {
         String sql = "DELETE FROM StudentExams WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExamID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -119,8 +116,7 @@ public class StudentExamDAO {
     public List<Integer> getExamIDsByStudent(int studentID) {
         List<Integer> examIDs = new ArrayList<>();
         String sql = "SELECT ExamID FROM StudentExams WHERE StudentID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -131,5 +127,32 @@ public class StudentExamDAO {
             e.printStackTrace();
         }
         return examIDs;
+    }
+
+    // StudentExamDAO.java (example method)
+    public List<Exam> getExamsByStudent(int studentID) {
+        List<Exam> examList = new ArrayList<>();
+        String sql = "SELECT e.ExamID, e.ExamName, e.ExamDate"
+                + "FROM StudentExams se "
+                + "JOIN Exams e ON se.ExamID = e.ExamID "
+                + "JOIN Courses c ON e.CourseID = c.CourseID "
+                + "WHERE se.StudentID = ?";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, studentID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Exam exam = new Exam();
+                    exam.setExamID(rs.getInt("ExamID"));
+                    exam.setExamName(rs.getString("ExamName"));
+                    exam.setExamDate(rs.getDate("ExamDate"));
+                    // If you stored CourseName inside your Exam model, or have an extended model:
+                    examList.add(exam);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return examList;
     }
 }

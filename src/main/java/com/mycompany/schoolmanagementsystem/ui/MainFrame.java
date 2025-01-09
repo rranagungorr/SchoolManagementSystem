@@ -13,6 +13,48 @@ import javax.swing.JPanel;
 public class MainFrame extends javax.swing.JFrame {
 
     /**
+     * @return the adminMainScreen
+     */
+    public AdminMainScreen getAdminMainScreen() {
+        return adminMainScreen;
+    }
+
+    /**
+     * @return the adminManageCourse
+     */
+    public AdminManageCourse getAdminManageCourse() {
+        return adminManageCourse;
+    }
+
+    /**
+     * @return the adminManageExam
+     */
+    public AdminManageExam getAdminManageExam() {
+        return adminManageExam;
+    }
+
+    /**
+     * @return the adminManageStudent
+     */
+    public AdminManageStudent getAdminManageStudent() {
+        return adminManageStudent;
+    }
+
+    /**
+     * @return the studentCourseList
+     */
+    public StudentCourseList getStudentCourseList() {
+        return studentCourseList;
+    }
+
+    /**
+     * @return the studentExamList
+     */
+    public StudentExamList getStudentExamList() {
+        return studentExamList;
+    }
+
+    /**
      * @return the account
      */
     public Object getAccount() {
@@ -32,12 +74,25 @@ public class MainFrame extends javax.swing.JFrame {
     
     private final LoginPanel loginPanel;
     private final StudentMainPanel studentMainPanel;
+    private final StudentCourseList studentCourseList;
+    private final StudentExamList studentExamList;
+    private final AdminMainScreen adminMainScreen;
+    private final AdminManageCourse adminManageCourse;
+    private final AdminManageExam adminManageExam;
+    private final AdminManageStudent adminManageStudent;
     
     public MainFrame() {
         initComponents();
 
         loginPanel = new LoginPanel();
         studentMainPanel = new StudentMainPanel();
+        studentCourseList = new StudentCourseList();
+        studentExamList = new StudentExamList();
+        
+        adminMainScreen = new AdminMainScreen();
+        adminManageCourse = new AdminManageCourse();
+        adminManageExam = new AdminManageExam();
+        adminManageStudent = new AdminManageStudent();
         
         this.add(mainPanel);
         setPage(loginPanel);
@@ -130,6 +185,14 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     public void login() {
+        if (MainFrame.instance.getAccount() instanceof Student) {
+            setPage(studentMainPanel);
+        }else if (MainFrame.instance.getAccount() instanceof Instructor) {
+            
+        }else if (MainFrame.instance.getAccount() instanceof Admin) {
+            setPage(adminMainScreen);
+        }
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

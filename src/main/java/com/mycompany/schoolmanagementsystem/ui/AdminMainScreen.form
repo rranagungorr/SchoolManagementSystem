@@ -57,11 +57,11 @@
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="107" max="-2" attributes="0"/>
-                  <Component id="jButton1" min="-2" pref="132" max="-2" attributes="0"/>
+                  <Component id="examButton" min="-2" pref="132" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="111" max="-2" attributes="0"/>
-                  <Component id="jButton2" min="-2" pref="132" max="-2" attributes="0"/>
+                  <Component id="courseButton" min="-2" pref="132" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="92" max="-2" attributes="0"/>
-                  <Component id="jButton3" min="-2" pref="132" max="-2" attributes="0"/>
+                  <Component id="stuButton" min="-2" pref="132" max="-2" attributes="0"/>
                   <EmptySpace pref="105" max="32767" attributes="0"/>
               </Group>
           </Group>
@@ -71,9 +71,9 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="132" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton2" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
-                      <Component id="jButton1" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
-                      <Component id="jButton3" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
+                      <Component id="courseButton" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
+                      <Component id="examButton" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
+                      <Component id="stuButton" alignment="3" min="-2" pref="45" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace pref="171" max="32767" attributes="0"/>
               </Group>
@@ -81,29 +81,38 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton1">
+        <Component class="javax.swing.JButton" name="examButton">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="EXAM"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="examButtonActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton2">
+        <Component class="javax.swing.JButton" name="courseButton">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="COURSE"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="courseButtonActionPerformed"/>
+          </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton3">
+        <Component class="javax.swing.JButton" name="stuButton">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Segoe UI" size="18" style="1"/>
             </Property>
             <Property name="text" type="java.lang.String" value="STUDENT"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stuButtonActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

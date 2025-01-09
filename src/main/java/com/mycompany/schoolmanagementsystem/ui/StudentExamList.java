@@ -4,17 +4,41 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.Exam;
+import com.mycompany.schoolmanagementsystem.management.Student;
+import com.mycompany.schoolmanagementsystem.service.StudentService;
+import java.util.List;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author PC
  */
-public class StudentExamList extends javax.swing.JPanel {
+public class StudentExamList extends javax.swing.JPanel implements IPage{
 
+    private DefaultTableModel tableModel;
+    private int studentID;
+
+    private StudentService studentService;
     /**
      * Creates new form StudentExamList
      */
     public StudentExamList() {
         initComponents();
+        String[] columnNames = { "Exam ID", "Exam Name", "Exam Date", "Course Name" };
+        
+        // Setup the table model
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            // Make columns not editable (optional)
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        examTable.setModel(tableModel);
+        examTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.studentService = new StudentService();
     }
 
     /**
@@ -27,10 +51,10 @@ public class StudentExamList extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        examTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        examTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -41,7 +65,7 @@ public class StudentExamList extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(examTable);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("Exam List");
@@ -68,10 +92,36 @@ public class StudentExamList extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void loadStudentExams() {
+        // 1) Retrieve the exams for this student
+        List<Exam> exams = studentService.getExamsForStudent(studentID);
+
+        // 2) Clear existing rows
+        tableModel.setRowCount(0);
+
+        // 3) Populate table
+        for (Exam exam : exams) {
+            Object[] rowData = {
+                exam.getExamID(),
+                exam.getExamName(),
+                exam.getExamDate(),
+            };
+            tableModel.addRow(rowData);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable examTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onPageSetted() {
+        if (MainFrame.instance.getAccount() instanceof Student student) {
+            this.studentID = student.getStudentID();
+            
+            loadStudentExams();
+        }
+    }
 }

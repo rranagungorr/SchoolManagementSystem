@@ -10,12 +10,14 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.FieldDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
+import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Field;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
+import com.mycompany.schoolmanagementsystem.management.Student;
 import java.util.List;
 
 /**
@@ -29,6 +31,7 @@ public class AdminService {
     private ExamDAO examDAO;
     private InstructorDAO instructorDAO;
     private AdminDAO adminDAO;
+    private StudentDAO studentDAO;
     // ... plus any other DAO you may need
 
     public AdminService() {
@@ -40,6 +43,7 @@ public class AdminService {
         this.examDAO = new ExamDAO();
         this.instructorDAO = new InstructorDAO();
         this.adminDAO = new AdminDAO();
+        this.studentDAO = new StudentDAO();
     }
 
     // ----------- Department Management -----------
@@ -129,6 +133,13 @@ public class AdminService {
         return courseDAO.getAll();
     }
 
+    public int createStudent(Student s) 
+    {
+
+        // Call the DAO to insert into the DB
+        return studentDAO.create(s);
+    }
+    
     // ----------- Exam Management -----------
     public int createExam(String examName, java.sql.Date examDate, int courseID, Integer invigilatorID, Integer classroomID) {
         Exam exam = new Exam();
@@ -189,6 +200,11 @@ public class AdminService {
         a.setUsername(username);
         a.setPassword(password);
         return adminDAO.create(a);
+    }
+
+    public boolean deleteStudent(int studentID) {
+        studentDAO.delete(studentID);
+        return true;
     }
 
 }

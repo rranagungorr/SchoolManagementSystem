@@ -4,17 +4,53 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
+import com.mycompany.schoolmanagementsystem.management.Department;
+import com.mycompany.schoolmanagementsystem.management.Student;
+import com.mycompany.schoolmanagementsystem.service.*;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author PC
  */
-public class AdminManageStudent extends javax.swing.JPanel {
+public class AdminManageStudent extends javax.swing.JPanel implements IPage {
+
+    private DefaultListModel<Department> listModel;
+
+    private AdminService adminService;
+    private StudentService studentService;
+    private DefaultTableModel tableModel;
+    // DAO or Service (for retrieving departments)
+
+    private DepartmentDAO departmentDAO;
 
     /**
      * Creates new form AdminManageStudent
      */
     public AdminManageStudent() {
         initComponents();
+        listModel = new DefaultListModel<>();
+        this.departmentDAO = new DepartmentDAO();
+        departmentJList.setModel(listModel);
+        departmentJList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        this.adminService = new AdminService();
+        this.studentService = new StudentService();
+
+        String[] columnNames = {"ID", "Name", "Surname", "Credits", "Department"};
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make table cells read-only
+            }
+        };
+
+        studentsTable.setModel(tableModel);
+        studentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     /**
@@ -28,24 +64,24 @@ public class AdminManageStudent extends javax.swing.JPanel {
 
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        studentsTable = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        departmentJList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        addStudentBtn = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
+        studentNameField = new javax.swing.JTextField();
         jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        surnameField = new javax.swing.JTextField();
+        creditField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        deleteStudentButton = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("MANAGE STUDENT");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        studentsTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -56,40 +92,22 @@ public class AdminManageStudent extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(studentsTable);
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(departmentJList);
 
         jLabel2.setText("Department:");
 
-        jButton1.setText("Add Student");
+        addStudentBtn.setText("Add Student");
+        addStudentBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addStudentBtnActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Student name:");
 
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-
         jLabel5.setText("Student surname:");
-
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
 
         jLabel6.setText("Student credit:");
 
@@ -107,12 +125,12 @@ public class AdminManageStudent extends javax.swing.JPanel {
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)))
+                            .addComponent(studentNameField)
+                            .addComponent(surnameField)
+                            .addComponent(creditField)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(137, 137, 137)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 3, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -126,29 +144,29 @@ public class AdminManageStudent extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(35, 35, 35)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(studentNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(surnameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(creditField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        jButton2.setText("Delete Student");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        deleteStudentButton.setText("Delete Student");
+        deleteStudentButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                deleteStudentButtonActionPerformed(evt);
             }
         });
 
@@ -164,15 +182,15 @@ public class AdminManageStudent extends javax.swing.JPanel {
                 .addGap(83, 83, 83)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(deleteStudentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(52, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
+                .addContainerGap(65, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deleteStudentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,38 +200,134 @@ public class AdminManageStudent extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+    private void loadStudents() {
+        // Clear table
+        tableModel.setRowCount(0);
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+        // Retrieve list of students from service
+        List<Student> students = studentService.getAllStudents();
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+        // Populate table
+        for (Student s : students) {
+            Object[] rowData = {
+                s.getStudentID(),
+                s.getName(),
+                s.getSurname(),
+                s.getCredits(),
+                (s.getDepartmentID() != null) ? getDeptName(s.getDepartmentID()) : "N/A"
+            };
+            tableModel.addRow(rowData);
+        }
+    }
+    
+    private String getDeptName(int deptID) {
+        Department d = departmentDAO.getByID(deptID);
+        return d != null ? d.getDepartmentName() : "Unknown";
+    }
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void deleteStudentButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteStudentButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+        int selectedRow = studentsTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a student from the table.");
+            return;
+        }
 
+        // Get the student ID from the table's first column
+        int studentID = (int) tableModel.getValueAt(selectedRow, 0);
+
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete student ID " + studentID + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = adminService.deleteStudent(studentID);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Student deleted successfully!");
+                loadStudents();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete student.");
+            }
+        }
+    }//GEN-LAST:event_deleteStudentButtonActionPerformed
+
+    private void addStudentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentBtnActionPerformed
+        // TODO add your handling code here:
+        String name = studentNameField.getText().trim();
+        String surname = surnameField.getText().trim();
+        String creditsStr = creditField.getText().trim();
+        Department dept = listModel.getElementAt(departmentJList.getSelectedIndex());
+
+        if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+            return;
+        }
+
+        int credits;
+        try {
+            credits = Integer.parseInt(creditsStr);
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Credits must be a valid integer.");
+            return;
+        }
+
+        // In your real logic, you might have a Department table. For the example, 
+        // we'll imagine you store dept as just a string or you have logic to find 
+        // the dept ID by name. Let's assume a simpler approach:
+        // 1) Possibly find or create the department row
+        // 2) Insert a new student with the given data
+        Student s = new Student();
+        s.setName(name);
+        s.setSurname(surname);
+        s.setCredits(credits);
+        s.setGender("N/A"); // or handle if you have that in the DB
+        s.setEmail("example@domain.com"); // or prompt user
+        // Suppose we do not use dept ID, or we have some logic to handle it
+        // For now, we set departmentID = null or 1, etc.
+        s.setDepartmentID(dept.getDepartmentID());
+
+        int newID = adminService.createStudent(s);
+        if (newID > 0) {
+            JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to add student.");
+        }
+    }//GEN-LAST:event_addStudentBtnActionPerformed
+
+    private void loadDepartments() {
+        // 1) Retrieve the list of all departments
+        List<Department> departmentList = departmentDAO.getAll();
+
+        // 2) Clear any existing data in the list model
+        listModel.clear();
+
+        // 3) Add each Department to the model
+        for (Department dept : departmentList) {
+            listModel.addElement(dept);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton addStudentBtn;
+    private javax.swing.JTextField creditField;
+    private javax.swing.JButton deleteStudentButton;
+    private javax.swing.JList<Department> departmentJList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
+    private javax.swing.JTextField studentNameField;
+    private javax.swing.JTable studentsTable;
+    private javax.swing.JTextField surnameField;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onPageSetted() {
+        loadDepartments();
+
+    }
 }

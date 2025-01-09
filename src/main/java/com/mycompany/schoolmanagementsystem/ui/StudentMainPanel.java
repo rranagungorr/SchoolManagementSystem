@@ -161,12 +161,12 @@ public class StudentMainPanel extends javax.swing.JPanel implements IPage{
 
     private void courseListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_courseListButtonActionPerformed
         // TODO add your handling code here:
-        MainFrame.instance.setPage(this);
+        MainFrame.instance.setPage(MainFrame.instance.getStudentCourseList());
     }//GEN-LAST:event_courseListButtonActionPerformed
 
     private void examListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_examListButtonActionPerformed
         // TODO add your handling code here:
-         MainFrame.instance.setPage(this);
+         MainFrame.instance.setPage(MainFrame.instance.getStudentExamList());
     }//GEN-LAST:event_examListButtonActionPerformed
 
     private void attendanceListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceListButtonActionPerformed

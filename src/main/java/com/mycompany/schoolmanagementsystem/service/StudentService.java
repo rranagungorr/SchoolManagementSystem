@@ -126,4 +126,13 @@ public class StudentService {
         // We are calling StudentCourseDAO's "exists" method
         return studentCourseDAO.exists(studentID, courseID);
     }
+    
+     // Get all exams for a student
+    public List<Exam> getExamsForStudent(int studentID) {
+        return studentExamDAO.getExamsByStudent(studentID);
+    }
+
+    public List<Student> getAllStudents() {
+        return studentDAO.getAll();
+    }
 }
