@@ -1,20 +1,54 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.mycompany.schoolmanagementsystem.ui;
+
+import com.mycompany.schoolmanagementsystem.management.Course;
+import com.mycompany.schoolmanagementsystem.management.Student;
+import com.mycompany.schoolmanagementsystem.service.StudentService;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author PC
  */
-public class StudentCourseList extends javax.swing.JPanel {
+public class StudentCourseList extends javax.swing.JPanel implements IPage{
 
+    
+    private DefaultTableModel tableModel;
+
+    private int studentID;     
+    private int departmentID;  
+
+    // A reference to your service or DAO classes
+    private StudentService studentService; 
     /**
      * Creates new form StudentCourseList
      */
     public StudentCourseList() {
         initComponents();
+        String[] columnNames = { "Course ID", "Course Name", "Credits", "Enrolled" };
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            // Make "Enrolled" a boolean column
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 3) {
+                    return Boolean.class;
+                }
+                return super.getColumnClass(columnIndex);
+            }
+            // Optionally disable editing
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+
+        courseTable.setModel(tableModel);
+        courseTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        // Suppose you get the StudentService via constructor or injection
+        this.studentService = new StudentService(); 
     }
 
     /**
@@ -27,12 +61,12 @@ public class StudentCourseList extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
+        courseTable = new javax.swing.JTable();
+        addCourseButton = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
-        jTable1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        courseTable.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        courseTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -43,13 +77,13 @@ public class StudentCourseList extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(courseTable);
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setText("ADD COURSE");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        addCourseButton.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        addCourseButton.setText("ADD COURSE");
+        addCourseButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                addCourseButtonActionPerformed(evt);
             }
         });
 
@@ -69,7 +103,7 @@ public class StudentCourseList extends javax.swing.JPanel {
                             .addComponent(jLabel1))
                         .addGroup(layout.createSequentialGroup()
                             .addGap(518, 518, 518)
-                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(addCourseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addGap(0, 554, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
@@ -78,22 +112,92 @@ public class StudentCourseList extends javax.swing.JPanel {
                 .addGap(32, 32, 32)
                 .addComponent(jLabel1)
                 .addGap(40, 40, 40)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addCourseButton, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 364, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(60, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void loadCourses() {
+        // 1) Fetch the list of courses in the student's department
+        //    (Implementation depends on your service/DAO)
+        List<Course> coursesInDept = /* e.g. */ studentService.getAllCoursesForDepartment(departmentID);
+
+        // 2) Clear existing rows
+        tableModel.setRowCount(0);
+
+        // 3) For each course, check if the student is already enrolled, then add a row
+        for (Course course : coursesInDept) {
+            boolean isEnrolled = studentService.isStudentEnrolled(studentID, course.getCourseID());
+            Object[] rowData = {
+                course.getCourseID(),
+                course.getCourseName(),
+                course.getCredits(),
+                isEnrolled
+            };
+            tableModel.addRow(rowData);
+        }
+    }
+    
+    private void addCourseButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCourseButtonActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        
+        int selectedRow = courseTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this,
+                    "Please select a course from the table",
+                    "No Selection",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Check if user is already enrolled
+        boolean alreadyEnrolled = (boolean) tableModel.getValueAt(selectedRow, 3);
+        if (alreadyEnrolled) {
+            JOptionPane.showMessageDialog(this,
+                    "You are already enrolled in this course!",
+                    "Already Enrolled",
+                    JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Get courseID from the selected row
+        int courseID = (int) tableModel.getValueAt(selectedRow, 0);
+
+        // 1) Enroll student via service
+        boolean success = studentService.enrollInCourse(studentID, courseID);
+        if (success) {
+            // 2) Update the table row to reflect enrollment
+            tableModel.setValueAt(true, selectedRow, 3);
+
+            JOptionPane.showMessageDialog(this,
+                    "Successfully enrolled in the course!",
+                    "Enrollment Successful",
+                    JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(this,
+                    "Failed to enroll in the course.",
+                    "Enrollment Error",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_addCourseButtonActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton addCourseButton;
+    private javax.swing.JTable courseTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onPageSetted() {
+        if (MainFrame.instance.getAccount() instanceof Student student) {
+            this.studentID = student.getStudentID();
+            this.departmentID = student.getDepartmentID();
+            
+            loadCourses();
+        }
+    }
 }

@@ -13,16 +13,17 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author PC
  */
 public class StudentCourseDAO {
+
     // CREATE (enroll Student in Course)
     public int create(StudentCourse studentCourse) {
         String sql = "INSERT INTO StudentCourses (StudentID, CourseID) VALUES (?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, studentCourse.getStudentID());
             pstmt.setInt(2, studentCourse.getCourseID());
 
@@ -43,8 +44,7 @@ public class StudentCourseDAO {
     // READ by ID
     public StudentCourse getByID(int studentCourseID) {
         String sql = "SELECT * FROM StudentCourses WHERE StudentCourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentCourseID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -65,9 +65,7 @@ public class StudentCourseDAO {
     public List<StudentCourse> getAll() {
         List<StudentCourse> list = new ArrayList<>();
         String sql = "SELECT * FROM StudentCourses";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 StudentCourse sc = new StudentCourse();
                 sc.setStudentCourseID(rs.getInt("StudentCourseID"));
@@ -84,8 +82,7 @@ public class StudentCourseDAO {
     // UPDATE
     public boolean update(StudentCourse studentCourse) {
         String sql = "UPDATE StudentCourses SET StudentID = ?, CourseID = ? WHERE StudentCourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentCourse.getStudentID());
             pstmt.setInt(2, studentCourse.getCourseID());
             pstmt.setInt(3, studentCourse.getStudentCourseID());
@@ -101,8 +98,7 @@ public class StudentCourseDAO {
     // DELETE
     public boolean delete(int studentCourseID) {
         String sql = "DELETE FROM StudentCourses WHERE StudentCourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentCourseID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -116,8 +112,7 @@ public class StudentCourseDAO {
     public List<Integer> getCourseIDsByStudent(int studentID) {
         List<Integer> courseIDs = new ArrayList<>();
         String sql = "SELECT CourseID FROM StudentCourses WHERE StudentID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -134,8 +129,7 @@ public class StudentCourseDAO {
     public List<Integer> getStudentIDsByCourse(int courseID) {
         List<Integer> studentIDs = new ArrayList<>();
         String sql = "SELECT StudentID FROM StudentCourses WHERE CourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, courseID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
@@ -146,5 +140,26 @@ public class StudentCourseDAO {
             e.printStackTrace();
         }
         return studentIDs;
+    }
+
+    // StudentCourseDAO.java
+    public boolean exists(int studentID, int courseID) {
+        String sql = "SELECT COUNT(*) AS totalCount "
+                + "FROM StudentCourses "
+                + "WHERE StudentID = ? AND CourseID = ?";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, studentID);
+            pstmt.setInt(2, courseID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt("totalCount");
+                    return count > 0; // if > 0, it means an enrollment record already exists
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

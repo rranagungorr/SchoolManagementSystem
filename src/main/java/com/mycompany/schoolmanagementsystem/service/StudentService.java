@@ -22,11 +22,13 @@ import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Field;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.util.List;
+
 /**
  *
  * @author PC
  */
 public class StudentService {
+
     private StudentDAO studentDAO;
     private StudentCourseDAO studentCourseDAO;
     private AttendanceDAO attendanceDAO;
@@ -47,8 +49,8 @@ public class StudentService {
 
     // ----------- Student Profile Management -----------
     public int registerStudent(String name, String surname, int credits, int classLevel,
-                               String email, Integer departmentID, String username, 
-                               String password, String gender) {
+            String email, Integer departmentID, String username,
+            String password, String gender) {
         Student s = new Student();
         s.setName(name);
         s.setSurname(surname);
@@ -67,7 +69,6 @@ public class StudentService {
     }
 
     // ... updateStudentProfile, deleteStudent, etc.
-
     // ----------- Course Enrollment -----------
     public boolean enrollInCourse(int studentID, int courseID) {
         // Could add business logic, e.g. check capacity, check prerequisites, etc.
@@ -117,5 +118,12 @@ public class StudentService {
     }
 
     // ... Additional student-related logic
-}
+    public List<Course> getAllCoursesForDepartment(int departmentID) {
+        return courseDAO.getAllByDepartment(departmentID);
+    }
 
+    public boolean isStudentEnrolled(int studentID, int courseID) {
+        // We are calling StudentCourseDAO's "exists" method
+        return studentCourseDAO.exists(studentID, courseID);
+    }
+}

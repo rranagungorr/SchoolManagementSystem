@@ -31,11 +31,13 @@ public class MainFrame extends javax.swing.JFrame {
     private Object account;
     
     private final LoginPanel loginPanel;
+    private final StudentMainPanel studentMainPanel;
     
     public MainFrame() {
         initComponents();
 
         loginPanel = new LoginPanel();
+        studentMainPanel = new StudentMainPanel();
         
         this.add(mainPanel);
         setPage(loginPanel);
@@ -133,4 +135,11 @@ public class MainFrame extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
+
+    /**
+     * @return the studentMainPanel
+     */
+    public StudentMainPanel getStudentMainPanel() {
+        return studentMainPanel;
+    }
 }

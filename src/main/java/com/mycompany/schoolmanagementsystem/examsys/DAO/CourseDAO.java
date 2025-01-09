@@ -138,4 +138,42 @@ public class CourseDAO {
         }
         return false;
     }
+    
+    public List<Course> getAllByDepartment(int departmentID) {
+    List<Course> courses = new ArrayList<>();
+    // We assume the link between Courses and Departments is via the FieldID => DepartmentID
+    // So we might need a join or subquery, depending on your schema
+
+    // Option 1 (JOIN on Fields and Departments):
+    // SELECT c.* 
+    // FROM Courses c
+    // JOIN Fields f ON c.FieldID = f.FieldID
+    // WHERE f.DepartmentID = ?
+
+    String sql = "SELECT c.* " +
+                 "FROM Courses c " +
+                 "JOIN Fields f ON c.FieldID = f.FieldID " +
+                 "WHERE f.DepartmentID = ?";
+
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+        pstmt.setInt(1, departmentID);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            while (rs.next()) {
+                Course c = new Course();
+                c.setCourseID(rs.getInt("CourseID"));
+                c.setCourseName(rs.getString("CourseName"));
+                c.setCourseCode(rs.getString("CourseCode"));
+                c.setCredits(rs.getInt("Credits"));
+                c.setFieldID(rs.getInt("FieldID"));
+                c.setInstructorID((Integer) rs.getObject("InstructorID"));
+                courses.add(c);
+            }
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return courses;
+}
 }
