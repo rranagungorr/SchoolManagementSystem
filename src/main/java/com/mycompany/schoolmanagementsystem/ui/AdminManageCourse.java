@@ -37,6 +37,7 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
         initComponents();
         this.departmentDAO = new DepartmentDAO();
         this.adminService = new AdminService();
+        deptListModel = new DefaultListModel<>();
         departmentList.setModel(deptListModel);
         departmentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         

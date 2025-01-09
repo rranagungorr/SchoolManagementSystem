@@ -13,6 +13,27 @@ import javax.swing.JPanel;
 public class MainFrame extends javax.swing.JFrame {
 
     /**
+     * @return the instructorMainPanel
+     */
+    public InstructorMainPanel getInstructorMainPanel() {
+        return instructorMainPanel;
+    }
+
+    /**
+     * @return the instructorCourseList
+     */
+    public InstructorCourseList getInstructorCourseList() {
+        return instructorCourseList;
+    }
+
+    /**
+     * @return the instructorAttendanceRecord
+     */
+    public InstructorAttendanceRecord getInstructorAttendanceRecord() {
+        return instructorAttendanceRecord;
+    }
+
+    /**
      * @return the adminMainScreen
      */
     public AdminMainScreen getAdminMainScreen() {
@@ -80,6 +101,9 @@ public class MainFrame extends javax.swing.JFrame {
     private final AdminManageCourse adminManageCourse;
     private final AdminManageExam adminManageExam;
     private final AdminManageStudent adminManageStudent;
+    private final InstructorMainPanel instructorMainPanel;
+    private final InstructorCourseList instructorCourseList;
+    private final InstructorAttendanceRecord instructorAttendanceRecord;
     
     public MainFrame() {
         initComponents();
@@ -93,6 +117,10 @@ public class MainFrame extends javax.swing.JFrame {
         adminManageCourse = new AdminManageCourse();
         adminManageExam = new AdminManageExam();
         adminManageStudent = new AdminManageStudent();
+        
+        instructorMainPanel = new InstructorMainPanel();
+        instructorAttendanceRecord = new InstructorAttendanceRecord();
+        instructorCourseList = new InstructorCourseList();
         
         this.add(mainPanel);
         setPage(loginPanel);
@@ -188,7 +216,7 @@ public class MainFrame extends javax.swing.JFrame {
         if (MainFrame.instance.getAccount() instanceof Student) {
             setPage(studentMainPanel);
         }else if (MainFrame.instance.getAccount() instanceof Instructor) {
-            
+            setPage(instructorMainPanel);
         }else if (MainFrame.instance.getAccount() instanceof Admin) {
             setPage(adminMainScreen);
         }

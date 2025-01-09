@@ -8,7 +8,7 @@ package com.mycompany.schoolmanagementsystem.ui;
  *
  * @author PC
  */
-public class InstructorMainPanel extends javax.swing.JPanel {
+public class InstructorMainPanel extends javax.swing.JPanel implements IPage{
 
     /**
      * Creates new form InstructorMainPanel
@@ -163,12 +163,12 @@ public class InstructorMainPanel extends javax.swing.JPanel {
 
     private void attendanceListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceListButtonActionPerformed
         // TODO add your handling code here:
-        MainFrame.instance.setPage(this);
+        MainFrame.instance.setPage(MainFrame.instance.getInstructorAttendanceRecord());
     }//GEN-LAST:event_attendanceListButtonActionPerformed
 
     private void courseListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_courseListButtonActionPerformed
         // TODO add your handling code here:
-        MainFrame.instance.setPage(this);
+        MainFrame.instance.setPage(MainFrame.instance.getInstructorCourseList());
     }//GEN-LAST:event_courseListButtonActionPerformed
 
 
@@ -187,4 +187,9 @@ public class InstructorMainPanel extends javax.swing.JPanel {
     private javax.swing.JTextField studentNoLabel;
     private javax.swing.JTextField studentSurnameField;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onPageSetted() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
