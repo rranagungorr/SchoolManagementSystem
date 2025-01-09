@@ -42,7 +42,7 @@ public class AdminMainScreen extends javax.swing.JPanel {
         jButton2.setText("COURSE");
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
-        jButton3.setText("USER");
+        jButton3.setText("STUDENT");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
