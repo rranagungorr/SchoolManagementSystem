@@ -4,17 +4,37 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.management.Course;
+import com.mycompany.schoolmanagementsystem.management.Instructor;
+import com.mycompany.schoolmanagementsystem.service.InstructorService;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author PC
  */
-public class InstructorCourseList extends javax.swing.JPanel {
+public class InstructorCourseList extends javax.swing.JPanel implements IPage{
 
+    private InstructorService instructorService;
+    private DefaultTableModel tableModel;
     /**
      * Creates new form InstructorCourseList
      */
     public InstructorCourseList() {
         initComponents();
+        
+        instructorService = new InstructorService();
+        
+        // Table in the center
+        String[] columnNames = { "Course ID", "Course Name", "Course Code", "Credits" };
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        courseTable.setModel(tableModel);
     }
 
     /**
@@ -27,10 +47,10 @@ public class InstructorCourseList extends javax.swing.JPanel {
     private void initComponents() {
 
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        courseTable = new javax.swing.JTable();
         jLabel1 = new javax.swing.JLabel();
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        courseTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -41,7 +61,7 @@ public class InstructorCourseList extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(courseTable);
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("COURSE LIST");
@@ -70,8 +90,34 @@ public class InstructorCourseList extends javax.swing.JPanel {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable courseTable;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
     // End of variables declaration//GEN-END:variables
+
+   private void loadInstructorCourses(int instructorID) {
+        // Clear any existing rows
+        tableModel.setRowCount(0);
+
+        // Get courses for the instructor
+        List<Course> courses = instructorService.getCoursesByInstructor(instructorID);
+
+        // Populate table
+        for (Course c : courses) {
+            Object[] rowData = {
+                c.getCourseID(),
+                c.getCourseName(),
+                c.getCourseCode(),
+                c.getCredits()
+            };
+            tableModel.addRow(rowData);
+        }
+    }
+    @Override
+    public void onPageSetted() {
+        if (MainFrame.instance.getAccount() instanceof Instructor inst) {
+            loadInstructorCourses(inst.getInstructorID());
+        }
+        
+    }
 }

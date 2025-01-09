@@ -4,18 +4,67 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
+import com.mycompany.schoolmanagementsystem.examsys.DAO.FieldDAO;
+import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
+import com.mycompany.schoolmanagementsystem.management.Course;
+import com.mycompany.schoolmanagementsystem.management.Department;
+import com.mycompany.schoolmanagementsystem.management.Field;
+import com.mycompany.schoolmanagementsystem.management.Instructor;
+import com.mycompany.schoolmanagementsystem.service.AdminService;
+import java.util.List;
+import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author PC
  */
-public class AdminManageCourse extends javax.swing.JPanel {
+public class AdminManageCourse extends javax.swing.JPanel implements IPage{
 
+    private DefaultListModel<Department> deptListModel;
+    private DefaultTableModel tableModel;
+    private DepartmentDAO departmentDAO;
+
+    // Service or DAO
+    private AdminService adminService;
     /**
      * Creates new form AdminManageCourse
      */
     public AdminManageCourse() {
         initComponents();
+        this.departmentDAO = new DepartmentDAO();
+        this.adminService = new AdminService();
+        departmentList.setModel(deptListModel);
+        departmentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        String[] columnNames = { "Course ID", "Course Name", "Instructor", "Department" };
+        tableModel = new DefaultTableModel(columnNames, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // make the table read-only
+            }
+        };
+
+        coursesTable.setModel(tableModel);
+        coursesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
+    
+    private void loadDepartments() {
+        // 1) Retrieve the list of all departments
+        List<Department> departmentList = departmentDAO.getAll();
+
+        // 2) Clear any existing data in the list model
+        deptListModel.clear();
+
+        // 3) Add each Department to the model
+        for (Department dept : departmentList) {
+            deptListModel.addElement(dept);
+        }
+    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,52 +77,30 @@ public class AdminManageCourse extends javax.swing.JPanel {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
-        jList1 = new javax.swing.JList<>();
+        departmentList = new javax.swing.JList<>();
         jLabel2 = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
+        addCourse = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
-        jTextField3 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
+        courseNameField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        jButton2 = new javax.swing.JButton();
+        instructorComboBox = new javax.swing.JComboBox<>();
+        deketeCourse = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        coursesTable = new javax.swing.JTable();
 
-        jList1.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jScrollPane2.setViewportView(jList1);
+        jScrollPane2.setViewportView(departmentList);
 
         jLabel2.setText("Department:");
 
-        jButton1.setText("Add Course");
+        addCourse.setText("Add Course");
+        addCourse.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addCourseActionPerformed(evt);
+            }
+        });
 
         jLabel4.setText("Instructor name:");
-
-        jTextField2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField2ActionPerformed(evt);
-            }
-        });
-
-        jLabel5.setText("Instructor surname:");
-
-        jTextField3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField3ActionPerformed(evt);
-            }
-        });
-
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
-            }
-        });
 
         jLabel6.setText("course name:");
 
@@ -87,16 +114,14 @@ public class AdminManageCourse extends javax.swing.JPanel {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jTextField2)
-                            .addComponent(jTextField3)
-                            .addComponent(jTextField4)))
+                            .addComponent(courseNameField)
+                            .addComponent(instructorComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(137, 137, 137)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(addCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(0, 3, Short.MAX_VALUE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -108,38 +133,34 @@ public class AdminManageCourse extends javax.swing.JPanel {
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(82, 82, 82)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(instructorComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(courseNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(13, 13, 13)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(addCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(39, Short.MAX_VALUE))
         );
 
-        jButton2.setText("Delete Course");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        deketeCourse.setText("Delete Course");
+        deketeCourse.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                deketeCourseActionPerformed(evt);
             }
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("MANAGE COURSES");
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        coursesTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
                 {null, null, null, null},
@@ -150,7 +171,7 @@ public class AdminManageCourse extends javax.swing.JPanel {
                 "Title 1", "Title 2", "Title 3", "Title 4"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(coursesTable);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -164,15 +185,15 @@ public class AdminManageCourse extends javax.swing.JPanel {
                 .addGap(83, 83, 83)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(deketeCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(62, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(49, Short.MAX_VALUE)
+                .addContainerGap(65, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deketeCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -182,38 +203,147 @@ public class AdminManageCourse extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+    private void deketeCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deketeCourseActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
+        int selectedRow = coursesTable.getSelectedRow();
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(this, "Please select a course from the table.");
+            return;
+        }
 
-    private void jTextField3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField3ActionPerformed
+        int courseID = (int) tableModel.getValueAt(selectedRow, 0);
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete course ID " + courseID + "?",
+                "Confirm Deletion",
+                JOptionPane.YES_NO_OPTION);
+        if (confirm == JOptionPane.YES_OPTION) {
+            boolean success = adminService.deleteCourse(courseID);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Course deleted successfully!");
+                loadCourses();
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to delete course.");
+            }
+        }
+    }//GEN-LAST:event_deketeCourseActionPerformed
+
+    private void addCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCourseActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField3ActionPerformed
+        // Get the selected instructor from the combo
+        Instructor selectedInstructor = (Instructor) instructorComboBox.getSelectedItem();
+        if (selectedInstructor == null) {
+            JOptionPane.showMessageDialog(this, "Please select an instructor.");
+            return;
+        }
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+        // Course name
+        String courseName = courseNameField.getText().trim();
+        if (courseName.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter a course name.");
+            return;
+        }
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        // Department selection
+        Department selectedDeptItem = departmentList.getSelectedValue();
+        if (selectedDeptItem == null) {
+            JOptionPane.showMessageDialog(this, "Please select a department item.");
+            return;
+        }
 
+        // For demonstration, let's assume fieldID=2 or you have logic to map 
+        // the selected list item to an actual field ID
+        int fieldID = 2; 
+
+        // Now we create the course. We'll pass the instructor's ID
+        int instructorID = selectedInstructor.getInstructorID();
+        // Hard-coded courseCode= "CODE123" for example, credits=3
+        int newCourseID = adminService.createCourse(courseName, "CODE123", 3, selectedDeptItem.getDepartmentID(), instructorID);
+        if (newCourseID > 0) {
+            JOptionPane.showMessageDialog(this, "Course added successfully! ID=" + newCourseID);
+
+            // Refresh table
+            loadCourses();
+        } else {
+            JOptionPane.showMessageDialog(this, "Failed to add course.");
+        }
+    }//GEN-LAST:event_addCourseActionPerformed
+
+      private void loadInstructors() {
+        // Clear existing items
+        var instDAO = new InstructorDAO();
+        instructorComboBox.removeAllItems();
+
+        // Retrieve from your service (or DAO) 
+        List<Instructor> instructorList = instDAO.getAll();
+        for (Instructor i : instructorList) {
+            instructorComboBox.addItem(i);
+        }
+
+        // Optionally set a selected index if needed
+        instructorComboBox.setSelectedIndex(0);
+    }
+
+    /**
+     * Loads courses from the database and populates the table.
+     */
+    private void loadCourses() {
+        tableModel.setRowCount(0);
+
+        List<Course> allCourses = adminService.getAllCourses();
+        for (Course c : allCourses) {
+            String instructorFullName = getInstructorFullName(c.getInstructorID());
+            String deptName = getDepartmentNameByFieldID(c.getFieldID());
+            Object[] rowData = {
+                c.getCourseID(),
+                c.getCourseName(),
+                instructorFullName,
+                deptName
+            };
+            tableModel.addRow(rowData);
+        }
+    }
+
+    // Example helper
+    private String getInstructorFullName(Integer instructorID) {
+        var instDAO = new InstructorDAO();
+        if (instructorID == null) return "N/A";
+        Instructor instructor = instDAO.getByID(instructorID);
+        if (instructor != null) {
+            return instructor.getName() + " " + instructor.getSurname();
+        }
+        return "Unknown";
+    }
+
+    private String getDepartmentNameByFieldID(int fieldID) {
+        var fDAO = new FieldDAO();
+        Field field = fDAO.getByID(fieldID);
+        if (field != null) {
+            Department d = adminService.getDepartmentByID(field.getDepartmentID());
+            return (d != null) ? d.getDepartmentName() : "Unknown";
+        }
+        return "N/A";
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton addCourse;
+    private javax.swing.JTextField courseNameField;
+    private javax.swing.JTable coursesTable;
+    private javax.swing.JButton deketeCourse;
+    private javax.swing.JList<Department> departmentList;
+    private javax.swing.JComboBox<Instructor> instructorComboBox;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
-    private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField3;
-    private javax.swing.JTextField jTextField4;
     // End of variables declaration//GEN-END:variables
+
+    @Override
+    public void onPageSetted() {
+        loadInstructors();
+        loadDepartments();
+        loadCourses();
+    }
 }

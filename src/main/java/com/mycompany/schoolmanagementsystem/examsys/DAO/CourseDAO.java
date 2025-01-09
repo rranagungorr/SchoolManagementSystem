@@ -13,17 +13,18 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author PC
  */
 public class CourseDAO {
+
     // CREATE
     public int create(Course course) {
         String sql = "INSERT INTO Courses (CourseName, CourseCode, Credits, FieldID, InstructorID) "
-                   + "VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                + "VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setString(1, course.getCourseName());
             pstmt.setString(2, course.getCourseCode());
             pstmt.setInt(3, course.getCredits());
@@ -52,8 +53,7 @@ public class CourseDAO {
     // READ by ID
     public Course getByID(int courseID) {
         String sql = "SELECT * FROM Courses WHERE CourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, courseID);
             try (ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
@@ -77,9 +77,7 @@ public class CourseDAO {
     public List<Course> getAll() {
         List<Course> list = new ArrayList<>();
         String sql = "SELECT * FROM Courses";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Course c = new Course();
@@ -121,10 +119,9 @@ public class CourseDAO {
     // UPDATE
     public boolean update(Course course) {
         String sql = "UPDATE Courses "
-                   + "SET CourseName = ?, CourseCode = ?, Credits = ?, FieldID = ?, InstructorID = ? "
-                   + "WHERE CourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                + "SET CourseName = ?, CourseCode = ?, Credits = ?, FieldID = ?, InstructorID = ? "
+                + "WHERE CourseID = ?";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, course.getCourseName());
             pstmt.setString(2, course.getCourseCode());
             pstmt.setInt(3, course.getCredits());
@@ -149,8 +146,7 @@ public class CourseDAO {
     // DELETE
     public boolean delete(int courseID) {
         String sql = "DELETE FROM Courses WHERE CourseID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, courseID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -159,42 +155,64 @@ public class CourseDAO {
         }
         return false;
     }
-    
+
     public List<Course> getAllByDepartment(int departmentID) {
-    List<Course> courses = new ArrayList<>();
-    // We assume the link between Courses and Departments is via the FieldID => DepartmentID
-    // So we might need a join or subquery, depending on your schema
+        List<Course> courses = new ArrayList<>();
+        // We assume the link between Courses and Departments is via the FieldID => DepartmentID
+        // So we might need a join or subquery, depending on your schema
 
-    // Option 1 (JOIN on Fields and Departments):
-    // SELECT c.* 
-    // FROM Courses c
-    // JOIN Fields f ON c.FieldID = f.FieldID
-    // WHERE f.DepartmentID = ?
+        // Option 1 (JOIN on Fields and Departments):
+        // SELECT c.* 
+        // FROM Courses c
+        // JOIN Fields f ON c.FieldID = f.FieldID
+        // WHERE f.DepartmentID = ?
+        String sql = "SELECT c.* "
+                + "FROM Courses c "
+                + "JOIN Fields f ON c.FieldID = f.FieldID "
+                + "WHERE f.DepartmentID = ?";
 
-    String sql = "SELECT c.* " +
-                 "FROM Courses c " +
-                 "JOIN Fields f ON c.FieldID = f.FieldID " +
-                 "WHERE f.DepartmentID = ?";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql)) {
-
-        pstmt.setInt(1, departmentID);
-        try (ResultSet rs = pstmt.executeQuery()) {
-            while (rs.next()) {
-                Course c = new Course();
-                c.setCourseID(rs.getInt("CourseID"));
-                c.setCourseName(rs.getString("CourseName"));
-                c.setCourseCode(rs.getString("CourseCode"));
-                c.setCredits(rs.getInt("Credits"));
-                c.setFieldID(rs.getInt("FieldID"));
-                c.setInstructorID((Integer) rs.getObject("InstructorID"));
-                courses.add(c);
+            pstmt.setInt(1, departmentID);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Course c = new Course();
+                    c.setCourseID(rs.getInt("CourseID"));
+                    c.setCourseName(rs.getString("CourseName"));
+                    c.setCourseCode(rs.getString("CourseCode"));
+                    c.setCredits(rs.getInt("Credits"));
+                    c.setFieldID(rs.getInt("FieldID"));
+                    c.setInstructorID((Integer) rs.getObject("InstructorID"));
+                    courses.add(c);
+                }
             }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return courses;
     }
-    return courses;
-}
+
+    public List<Course> getCoursesByInstructor(int instructorID) {
+        List<Course> courses = new ArrayList<>();
+        String sql = "SELECT * FROM Courses WHERE InstructorID = ?";
+        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, instructorID);
+
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Course c = new Course();
+                    c.setCourseID(rs.getInt("CourseID"));
+                    c.setCourseName(rs.getString("CourseName"));
+                    c.setCourseCode(rs.getString("CourseCode"));
+                    c.setCredits(rs.getInt("Credits"));
+                    c.setFieldID(rs.getInt("FieldID"));
+                    c.setInstructorID((Integer) rs.getObject("InstructorID"));
+                    courses.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courses;
+    }
 }

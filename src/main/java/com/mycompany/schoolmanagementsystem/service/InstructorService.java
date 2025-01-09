@@ -25,11 +25,13 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 import java.util.stream.Collectors;
+
 /**
  *
  * @author PC
  */
 public class InstructorService {
+
     private InstructorDAO instructorDAO;
     private CourseScheduleDAO courseScheduleDAO;
     private AttendanceDAO attendanceDAO;
@@ -84,13 +86,13 @@ public class InstructorService {
         //    If not, create one or handle logic differently
         // For simplicity, let's assume we create it if not exist
         // (In a real system, you might check or require a prior enrollment step.)
-        
+
         // Check if StudentExam record exists:
         List<StudentExam> allStudentExams = studentExamDAO.getAll();
         StudentExam existing = allStudentExams.stream()
-            .filter(se -> se.getStudentID() == studentID && se.getExamID() == examID)
-            .findFirst()
-            .orElse(null);
+                .filter(se -> se.getStudentID() == studentID && se.getExamID() == examID)
+                .findFirst()
+                .orElse(null);
 
         if (existing == null) {
             // create
@@ -121,6 +123,9 @@ public class InstructorService {
                 .collect(Collectors.toList());
     }
 
+    public List<Course> getCoursesByInstructor(int instructorID) {
+        return courseDAO.getCoursesByInstructor(instructorID);
+    }
     // ----------- Other instructor-related methods -----------
     // e.g. update personal info for instructors, retrieve instructor by ID, etc.
 }
