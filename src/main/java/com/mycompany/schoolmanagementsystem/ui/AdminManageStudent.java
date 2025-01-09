@@ -50,12 +50,12 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
             }
         };
         studentsTable.setModel(tableModel);
-<<<<<<< Updated upstream
-=======
+
+
         studentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         
         loadStudents();
->>>>>>> Stashed changes
+
     }
     
     private String generateRandomPassword() {
@@ -402,7 +402,6 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }//GEN-LAST:event_deleteStudentButtonActionPerformed
 
     private void addStudentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentBtnActionPerformed
-<<<<<<< Updated upstream
 
         // TODO add your handling code here:
         // 1) Form alanlarını al
@@ -430,7 +429,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }
 
     // 4) Kredi alanını integer parse et
-=======
+
                                                    
     String name = studentNameField.getText().trim();
     String surname = surnameField.getText().trim();
@@ -446,7 +445,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }
 
     // Credits'in sayı olup olmadığını kontrol et
->>>>>>> Stashed changes
+
     int credits;
     try {
         credits = Integer.parseInt(creditsStr);
@@ -455,9 +454,9 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         return;
     }
 
-<<<<<<< Updated upstream
+
     // 5) Student nesnesi oluşturup değerleri set et
-=======
+
     // Seçimler
     String gender = selectedGender.toString(); // Gender seçimi
     int classLevel;
@@ -469,12 +468,11 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }
 
     // Yeni bir Student nesnesi oluştur ve gerekli alanları doldur
->>>>>>> Stashed changes
+
     Student s = new Student();
     s.setName(name);
     s.setSurname(surname);
     s.setCredits(credits);
-<<<<<<< Updated upstream
     s.setGender("N/A");    // sabit veya cinsiyet alanınız varsa ordan alabilirsiniz
     s.setEmail("example@domain.com");  // isterseniz emailField'dan alabilirsiniz
     s.setClassLevel(2);   // her öğrenci için 2
@@ -487,7 +485,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     if (newID > 0) {
         JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
         loadStudents();  // tabloyu güncellemek için
-=======
+
     s.setClassLevel(classLevel);
     s.setGender(gender);
     s.setEmail(name.toLowerCase() + "." + surname.toLowerCase() + "@example.com"); // Basit e-posta
@@ -499,25 +497,23 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     if (newID > 0) {
         JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
         loadStudents(); // Öğrenciler tablosunu güncelle
->>>>>>> Stashed changes
+
     } else {
         JOptionPane.showMessageDialog(this, "Failed to add student.");
     }
 
-
     }//GEN-LAST:event_addStudentBtnActionPerformed
 
-<<<<<<< Updated upstream
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordFieldActionPerformed
-=======
+
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         
        MainFrame.instance.setPage(MainFrame.instance.getAdminMainScreen());
     }//GEN-LAST:event_jButton1ActionPerformed
->>>>>>> Stashed changes
+
 
     private void loadDepartments() {
         // 1) Retrieve the list of all departments
