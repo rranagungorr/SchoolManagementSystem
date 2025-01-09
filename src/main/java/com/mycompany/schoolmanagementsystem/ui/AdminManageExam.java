@@ -5,12 +5,15 @@
 package com.mycompany.schoolmanagementsystem.ui;
 
 import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseDAO;
+import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
+import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
@@ -18,11 +21,13 @@ import javax.swing.JList;
  */
 public class AdminManageExam extends javax.swing.JPanel {
 
-    /**
-     * Creates new form AdminManageStudent
-     */
+    private List<Course> courseList;       // store courses in memory
+    private List<Instructor> teacherList;  // store instructors in memory
+
     public AdminManageExam() {
         initComponents();
+        loadTeachersAndCourses(); // loads the combo box and list
+        loadExamsIntoTable();     // loads the exam table
     }
 
     /**
@@ -84,6 +89,11 @@ public class AdminManageExam extends javax.swing.JPanel {
         });
 
         jButton1.setText("Add Exam");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
 
@@ -144,6 +154,11 @@ public class AdminManageExam extends javax.swing.JPanel {
         );
 
         jButton2.setText("Cancel Exam");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
@@ -186,40 +201,179 @@ public class AdminManageExam extends javax.swing.JPanel {
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField2ActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        addExam();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+        cancelExam();
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void cancelExam() {
+        int selectedRow = jTable1.getSelectedRow();
+        if (selectedRow < 0) {
+            // No row selected
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Please select an exam row in the table to cancel/delete!");
+            return;
+        }
+
+        // The exam ID is presumably in column 0 (Exam ID)
+        int examID = (int) jTable1.getValueAt(selectedRow, 0);
+
+        // Confirm delete
+        int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                "Are you sure you want to delete Exam ID " + examID + "?",
+                "Cancel Exam", javax.swing.JOptionPane.YES_NO_OPTION);
+        if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+            // Delete from DB
+            ExamDAO examDAO = new ExamDAO();
+            boolean deleted = examDAO.delete(examID);
+            if (deleted) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Exam canceled (deleted) successfully!");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Failed to delete exam from database!");
+            }
+            // Refresh table
+            loadExamsIntoTable();
+        }
+    }
+
+    private void addExam() {
+        try {
+            // 1) Read date
+            // Expect "2025-01-31" format or similar
+            String dateStr = jTextField1.getText().trim();
+            if (dateStr.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Please enter a valid date (yyyy-mm-dd).");
+                return;
+            }
+            // Convert to java.sql.Date
+            java.sql.Date examDate = java.sql.Date.valueOf(dateStr);
+
+            // 2) Read classroom
+            String classroomStr = jTextField2.getText().trim();
+            if (classroomStr.isEmpty()) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Please enter a valid classroom.");
+                return;
+            }
+            // Suppose classroom is integer (e.g., 101). If it's text, handle differently
+            int classroomID = Integer.parseInt(classroomStr);
+
+            // 3) Get the selected course
+            int selectedIndex = jList1.getSelectedIndex();
+            if (selectedIndex < 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Please select a course from the list!");
+                return;
+            }
+            Course selectedCourse = courseList.get(selectedIndex);
+
+            // 4) Get the selected instructor
+            int comboIndex = jComboBox1.getSelectedIndex();
+            if (comboIndex < 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Please select an instructor!");
+                return;
+            }
+            Instructor selectedInstructor = teacherList.get(comboIndex);
+
+            // 5) Create a new Exam
+            Exam newExam = new Exam();
+            newExam.setExamName("New Exam"); // or you might add a separate text field for name
+            newExam.setExamDate(examDate);
+            newExam.setCourseID(selectedCourse.getCourseID());
+            newExam.setInvigilatorID(selectedInstructor.getInstructorID());
+            newExam.setClassroomID(classroomID);
+
+            // 6) Insert into DB
+            ExamDAO examDAO = new ExamDAO();
+            int generatedID = examDAO.create(newExam);
+            if (generatedID > 0) {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Exam created successfully (ID=" + generatedID + ")");
+            } else {
+                javax.swing.JOptionPane.showMessageDialog(this,
+                        "Failed to create exam!");
+            }
+
+            // 7) Refresh the jTable
+            loadExamsIntoTable();
+
+        } catch (NumberFormatException ex) {
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Invalid classroom number! " + ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            // This can happen if the dateStr is invalid for Date.valueOf()
+            javax.swing.JOptionPane.showMessageDialog(this,
+                    "Invalid date format: " + ex.getMessage());
+        }
+    }
+
     private void loadTeachersAndCourses() {
-    // 1) Load Teachers into the JComboBox
-    InstructorDAO instructorDAO = new InstructorDAO();
-    List<Instructor> teacherList = instructorDAO.getAllTeachers();
+        // 1) Load Teachers into the JComboBox
+        InstructorDAO instructorDAO = new InstructorDAO();
+        List<Instructor> teacherList = instructorDAO.getAllTeachers();
 
-    // Remove any old items
-    jComboBox1.removeAllItems();  
+        // Remove any old items
+        jComboBox1.removeAllItems();
 
-    // Add each Instructor object to the combo box
-    for (Instructor instructor : teacherList) {
-        jComboBox1.addItem(instructor.toString());
+        // Add each Instructor object to the combo box
+        for (Instructor instructor : teacherList) {
+            jComboBox1.addItem(instructor.toString());
+        }
+        // Optionally auto-select the first teacher if list not empty
+        if (!teacherList.isEmpty()) {
+            jComboBox1.setSelectedIndex(0);
+        }
+
+        // 2) Load Courses into the JList
+        CourseDAO courseDAO = new CourseDAO();
+        List<Course> courseList = courseDAO.getAllCourses();
+
+        // JList typically uses a ListModel; we can use DefaultListModel
+        DefaultListModel<String> listModel = new DefaultListModel<>();
+        for (Course c : courseList) {
+            // convert the Course to a string
+            listModel.addElement(c.getCourseID() + " - " + c.getCourseName());
+        }
+        jList1.setModel(listModel);
+
     }
-    // Optionally auto-select the first teacher if list not empty
-    if (!teacherList.isEmpty()) {
-        jComboBox1.setSelectedIndex(0);
+
+    private void loadExamsIntoTable() {
+        // 1) Get all exams from DB
+        ExamDAO examDAO = new ExamDAO();
+        List<Exam> examList = examDAO.getAll();
+
+        // 2) Define column names
+        String[] columnNames = {"Exam ID", "Exam Name", "Exam Date", "Course ID", "Instructor ID", "Classroom ID"};
+
+        // 3) Create a DefaultTableModel with those column names, 0 rows initially
+        DefaultTableModel tableModel = new DefaultTableModel(columnNames, 0);
+
+        // 4) Add each exam as a row in the table
+        for (Exam ex : examList) {
+            Object[] rowData = {
+                ex.getExamID(),
+                ex.getExamName(),
+                ex.getExamDate(), // java.sql.Date or java.util.Date
+                ex.getCourseID(),
+                ex.getInvigilatorID(),
+                ex.getClassroomID()
+            };
+            tableModel.addRow(rowData);
+        }
+
+        // 5) Finally, set this model to jTable1
+        jTable1.setModel(tableModel);
     }
-
-    // 2) Load Courses into the JList
-    CourseDAO courseDAO = new CourseDAO();
-    List<Course> courseList = courseDAO.getAllCourses();
-
-    // JList typically uses a ListModel; we can use DefaultListModel
-    DefaultListModel<Course> listModel = new DefaultListModel<>();
-    for (Course c : courseList) {
-        listModel.addElement(c);
-    }
-    jList1.setModel(listModel);
-}
-
-
-
-    
-
-    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
