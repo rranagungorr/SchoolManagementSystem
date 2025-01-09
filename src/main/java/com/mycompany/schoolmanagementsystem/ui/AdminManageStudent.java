@@ -34,6 +34,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
      */
     public AdminManageStudent() {
         initComponents();
+        
         listModel = new DefaultListModel<>();
         this.departmentDAO = new DepartmentDAO();
         departmentJList.setModel(listModel);
@@ -49,7 +50,18 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
             }
         };
         studentsTable.setModel(tableModel);
+<<<<<<< Updated upstream
+=======
+        studentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        
+        loadStudents();
+>>>>>>> Stashed changes
     }
+    
+    private String generateRandomPassword() {
+    int randomNumber = 10000 + (int)(Math.random() * 90000); // 5 basamaklı rastgele bir sayı
+    return String.valueOf(randomNumber);
+}
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -75,10 +87,17 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         creditField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jLabel7 = new javax.swing.JLabel();
+<<<<<<< Updated upstream
         usernameField = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         passwordField = new javax.swing.JTextField();
+=======
+        jLabel8 = new javax.swing.JLabel();
+        classLevelComboBox = new javax.swing.JComboBox<>();
+        genderComboBox = new javax.swing.JComboBox<>();
+>>>>>>> Stashed changes
         deleteStudentButton = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("MANAGE STUDENT");
@@ -111,7 +130,15 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
 
         jLabel5.setText("Student surname:");
 
-        jLabel6.setText("Student credit:");
+        jLabel6.setText("Student gender:");
+
+        jLabel7.setText("Student credit:");
+
+        jLabel8.setText("Student class level:");
+
+        classLevelComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "1", "2", "3", "4" }));
+
+        genderComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Male", "Female" }));
 
         jLabel7.setText("Student username:");
 
@@ -128,6 +155,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+<<<<<<< Updated upstream
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
@@ -152,7 +180,39 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
                             .addComponent(creditField)
                             .addComponent(usernameField)
                             .addComponent(passwordField))))
+=======
+                .addGap(44, 44, 44)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(studentNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                            .addComponent(surnameField)
+                            .addComponent(creditField)))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(classLevelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))))))
+>>>>>>> Stashed changes
                 .addGap(42, 42, 42))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(53, 53, 53))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -163,6 +223,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
                     .addComponent(studentNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+<<<<<<< Updated upstream
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(surnameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -181,12 +242,29 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)))
+=======
+                    .addComponent(creditField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(classLevelComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(genderComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+>>>>>>> Stashed changes
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
+<<<<<<< Updated upstream
                 .addContainerGap(44, Short.MAX_VALUE))
+=======
+                .addContainerGap())
+>>>>>>> Stashed changes
         );
 
         deleteStudentButton.setText("Delete Student");
@@ -196,25 +274,41 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
             }
         });
 
+        jButton1.setText("Back");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(49, 49, 49)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(49, 49, 49)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(30, 30, 30)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(83, 83, 83)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(38, 38, 38)
                 .addComponent(deleteStudentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(52, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+<<<<<<< Updated upstream
                 .addContainerGap(51, Short.MAX_VALUE)
+=======
+                .addContainerGap(70, Short.MAX_VALUE)
+>>>>>>> Stashed changes
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -223,9 +317,20 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
                         .addGap(86, 86, 86))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
+<<<<<<< Updated upstream
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(27, 27, 27))))
+=======
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(31, 31, 31))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jButton1)
+                                .addGap(43, 43, 43))))))
+>>>>>>> Stashed changes
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -297,6 +402,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }//GEN-LAST:event_deleteStudentButtonActionPerformed
 
     private void addStudentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentBtnActionPerformed
+<<<<<<< Updated upstream
 
         // TODO add your handling code here:
         // 1) Form alanlarını al
@@ -324,6 +430,23 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }
 
     // 4) Kredi alanını integer parse et
+=======
+                                                   
+    String name = studentNameField.getText().trim();
+    String surname = surnameField.getText().trim();
+    String creditsStr = creditField.getText().trim();
+    Department dept = departmentJList.getSelectedValue();
+    Object selectedGender = genderComboBox.getSelectedItem();
+    Object selectedClassLevel = classLevelComboBox.getSelectedItem();
+
+    // Alanların kontrolü
+    if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty() || dept == null || selectedGender == null || selectedClassLevel == null) {
+        JOptionPane.showMessageDialog(this, "Please fill in all fields.");
+        return;
+    }
+
+    // Credits'in sayı olup olmadığını kontrol et
+>>>>>>> Stashed changes
     int credits;
     try {
         credits = Integer.parseInt(creditsStr);
@@ -332,11 +455,26 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         return;
     }
 
+<<<<<<< Updated upstream
     // 5) Student nesnesi oluşturup değerleri set et
+=======
+    // Seçimler
+    String gender = selectedGender.toString(); // Gender seçimi
+    int classLevel;
+    try {
+        classLevel = Integer.parseInt(selectedClassLevel.toString()); // ClassLevel seçimi
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Class level must be a valid integer.");
+        return;
+    }
+
+    // Yeni bir Student nesnesi oluştur ve gerekli alanları doldur
+>>>>>>> Stashed changes
     Student s = new Student();
     s.setName(name);
     s.setSurname(surname);
     s.setCredits(credits);
+<<<<<<< Updated upstream
     s.setGender("N/A");    // sabit veya cinsiyet alanınız varsa ordan alabilirsiniz
     s.setEmail("example@domain.com");  // isterseniz emailField'dan alabilirsiniz
     s.setClassLevel(2);   // her öğrenci için 2
@@ -349,6 +487,19 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     if (newID > 0) {
         JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
         loadStudents();  // tabloyu güncellemek için
+=======
+    s.setClassLevel(classLevel);
+    s.setGender(gender);
+    s.setEmail(name.toLowerCase() + "." + surname.toLowerCase() + "@example.com"); // Basit e-posta
+    s.setUsername(name.toLowerCase() + surname.toLowerCase()); // Kullanıcı adı
+    s.setPassword(generateRandomPassword()); // Rastgele şifre
+    s.setDepartmentID(dept.getDepartmentID());
+
+    int newID = adminService.createStudent(s);
+    if (newID > 0) {
+        JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
+        loadStudents(); // Öğrenciler tablosunu güncelle
+>>>>>>> Stashed changes
     } else {
         JOptionPane.showMessageDialog(this, "Failed to add student.");
     }
@@ -356,9 +507,17 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
 
     }//GEN-LAST:event_addStudentBtnActionPerformed
 
+<<<<<<< Updated upstream
     private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_passwordFieldActionPerformed
+=======
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+        
+       MainFrame.instance.setPage(MainFrame.instance.getAdminMainScreen());
+    }//GEN-LAST:event_jButton1ActionPerformed
+>>>>>>> Stashed changes
 
     private void loadDepartments() {
         // 1) Retrieve the list of all departments
@@ -375,9 +534,12 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton addStudentBtn;
+    private javax.swing.JComboBox<String> classLevelComboBox;
     private javax.swing.JTextField creditField;
     private javax.swing.JButton deleteStudentButton;
     private javax.swing.JList<Department> departmentJList;
+    private javax.swing.JComboBox<String> genderComboBox;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;
