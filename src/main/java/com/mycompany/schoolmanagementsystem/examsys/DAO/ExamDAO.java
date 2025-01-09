@@ -55,6 +55,33 @@ public class ExamDAO {
         }
         return 0;
     }
+    
+    public int createExam(Exam exam) {
+        String sql = "INSERT INTO Exams (course_id, invigilator_id, classroom_id, exam_name, exam_date) "
+                   + "VALUES (?, ?, ?, ?, ?)";
+        // Adjust column names to match your DB (some might be instructor_id, etc.)
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setInt(1, exam.getCourseID());
+            pstmt.setInt(2, exam.getInvigilatorID());
+            pstmt.setInt(3, exam.getClassroomID());
+            pstmt.setString(4, exam.getExamName());
+            pstmt.setDate(5, exam.getExamDate()); // java.sql.Date
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // return generated exam_id
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
 
     // READ by ID
     public Exam getByID(int examID) {

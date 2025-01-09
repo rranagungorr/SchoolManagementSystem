@@ -96,6 +96,27 @@ public class CourseDAO {
         }
         return list;
     }
+    
+    public List<Course> getAllCourses() {
+        List<Course> courseList = new ArrayList<>();
+        String sql = "SELECT course_id, course_name FROM Courses";
+        // Adjust to match your schema/columns
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Course c = new Course();
+                c.setCourseID(rs.getInt("course_id"));
+                c.setCourseName(rs.getString("course_name"));
+                courseList.add(c);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return courseList;
+    }
 
     // UPDATE
     public boolean update(Course course) {

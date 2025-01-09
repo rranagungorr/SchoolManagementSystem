@@ -103,6 +103,27 @@ public class InstructorDAO {
         }
         return list;
     }
+    
+    public List<Instructor> getAllTeachers() {
+        List<Instructor> teacherList = new ArrayList<>();
+        String sql = "SELECT teacher_id, teacher_name FROM Teachers"; 
+        // Adjust column names, table name to match your DB
+
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+
+            while (rs.next()) {
+                Instructor t = new Instructor();
+                t.setInstructorID(rs.getInt("teacher_id"));
+                t.setName(rs.getString("teacher_name"));
+                teacherList.add(t);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return teacherList;
+    }
 
     // UPDATE
     public boolean update(Instructor instructor) {
