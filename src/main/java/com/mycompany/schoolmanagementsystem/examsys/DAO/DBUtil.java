@@ -1,24 +1,34 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.schoolmanagementsystem.examsys.DAO;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-/**
- *
- * @author PC
- */
-class DBUtil {
+public class DBUtil {
 
-    private static final String URL = "jdbc:sqlserver://localhost:1433;databaseName=YourDatabaseName";
-    private static final String USER = "yourUsername";
-    private static final String PASSWORD = "yourPassword";
+    // Adjust your database name
+    private static final String DATABASE_NAME = "schoolmanagement";
+
+    // For Windows Authentication with integrated security:
+    //   - Server:   RANAGUNGOR\SQLEXPRESS
+    //   - Port:     1433 (default SQL Server port)
+    //   - Using encryption & trusting the certificate
+    //   - integratedSecurity=true
+    private static final String URL = 
+        "jdbc:sqlserver://RANAGUNGOR\\SQLEXPRESS:1433;"
+      + "databaseName=" + DATABASE_NAME + ";"
+      + "encrypt=true;"
+      + "trustServerCertificate=true;"
+      + "integratedSecurity=true;";
+
+    // If using integrated security, you typically don't set user/password 
+    // for Windows Authentication.
+    // If you want SQL Auth, you would do something like:
+    // "jdbc:sqlserver://RANAGUNGOR\\SQLEXPRESS:1433;databaseName=YourDB;user=sa;password=12345;"
 
     public static Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(URL, USER, PASSWORD);
+        return DriverManager.getConnection(URL);
     }
 }
+
+
