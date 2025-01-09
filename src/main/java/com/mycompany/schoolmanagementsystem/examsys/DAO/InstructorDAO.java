@@ -19,12 +19,12 @@ import java.util.List;
  * @author PC
  */
 public class InstructorDAO {
+
     // CREATE
     public int create(Instructor instructor) {
         String sql = "INSERT INTO Instructors (Name, Surname, Email, Gender, DepartmentID, Username, Password) "
-                   + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, instructor.getName());
             pstmt.setString(2, instructor.getSurname());
@@ -40,7 +40,7 @@ public class InstructorDAO {
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                try ( ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         return rs.getInt(1); // new InstructorID
                     }
@@ -55,10 +55,9 @@ public class InstructorDAO {
     // READ by ID
     public Instructor getByID(int instructorID) {
         String sql = "SELECT * FROM Instructors WHERE InstructorID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, instructorID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     Instructor i = new Instructor();
                     i.setInstructorID(rs.getInt("InstructorID"));
@@ -82,9 +81,7 @@ public class InstructorDAO {
     public List<Instructor> getAll() {
         List<Instructor> list = new ArrayList<>();
         String sql = "SELECT * FROM Instructors";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Instructor i = new Instructor();
@@ -103,20 +100,23 @@ public class InstructorDAO {
         }
         return list;
     }
-    
+
     public List<Instructor> getAllTeachers() {
         List<Instructor> teacherList = new ArrayList<>();
-        String sql = "SELECT teacher_id, teacher_name FROM Teachers"; 
-        // Adjust column names, table name to match your DB
+        // 1) Tablo adını ve sütunları veritabanınızdaki gerçek isimlerle değiştirin
+        String sql = "SELECT InstructorID, Name FROM Instructors";
+        // Örnek tablo adı: Instructors
+        // Örnek sütunlar: InstructorID, Name
 
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Instructor t = new Instructor();
-                t.setInstructorID(rs.getInt("teacher_id"));
-                t.setName(rs.getString("teacher_name"));
+                // 2) Sütun isimlerini sorguda kullandığınızla eşleştirin
+                t.setInstructorID(rs.getInt("InstructorID"));
+                t.setName(rs.getString("Name"));
+                // Diğer alanları da set edebilirsiniz (Surname, Email vs.)
+
                 teacherList.add(t);
             }
         } catch (SQLException e) {
@@ -128,10 +128,9 @@ public class InstructorDAO {
     // UPDATE
     public boolean update(Instructor instructor) {
         String sql = "UPDATE Instructors "
-                   + "SET Name = ?, Surname = ?, Email = ?, Gender = ?, DepartmentID = ?, Username = ?, Password = ? "
-                   + "WHERE InstructorID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                + "SET Name = ?, Surname = ?, Email = ?, Gender = ?, DepartmentID = ?, Username = ?, Password = ? "
+                + "WHERE InstructorID = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, instructor.getName());
             pstmt.setString(2, instructor.getSurname());
             pstmt.setString(3, instructor.getEmail());
@@ -158,8 +157,7 @@ public class InstructorDAO {
     // DELETE
     public boolean delete(int instructorID) {
         String sql = "DELETE FROM Instructors WHERE InstructorID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, instructorID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;

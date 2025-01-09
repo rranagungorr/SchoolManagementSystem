@@ -48,9 +48,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
                 return false; // Make table cells read-only
             }
         };
-
         studentsTable.setModel(tableModel);
-        studentsTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     /**
@@ -76,6 +74,10 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         surnameField = new javax.swing.JTextField();
         creditField = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jLabel7 = new javax.swing.JLabel();
+        usernameField = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        passwordField = new javax.swing.JTextField();
         deleteStudentButton = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
@@ -111,56 +113,80 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
 
         jLabel6.setText("Student credit:");
 
+        jLabel7.setText("Student username:");
+
+        jLabel8.setText("Student pass:");
+
+        passwordField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                passwordFieldActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGap(44, 44, 44)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(studentNameField)
-                            .addComponent(surnameField)
-                            .addComponent(creditField)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(137, 137, 137)
-                        .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 3, Short.MAX_VALUE))
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 105, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGap(44, 44, 44)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel7, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel8, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 111, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(studentNameField, javax.swing.GroupLayout.DEFAULT_SIZE, 128, Short.MAX_VALUE)
+                            .addComponent(surnameField)
+                            .addComponent(creditField)
+                            .addComponent(usernameField)
+                            .addComponent(passwordField))))
                 .addGap(42, 42, 42))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGap(35, 35, 35)
+                .addGap(22, 22, 22)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(studentNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(surnameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(studentNameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(creditField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(13, 13, 13)
+                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(surnameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(creditField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(usernameField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(13, 13, 13))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                        .addComponent(passwordField, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(18, 18, 18)))
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(18, 18, 18)
                 .addComponent(addStudentBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(44, Short.MAX_VALUE))
         );
 
         deleteStudentButton.setText("Delete Student");
@@ -188,38 +214,57 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(65, Short.MAX_VALUE)
+                .addContainerGap(51, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(deleteStudentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(deleteStudentButton, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(86, 86, 86))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(86, 86, 86))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(27, 27, 27))))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void loadStudents() {
-        // Clear table
+        // 1) Tablonun mevcut satırlarını temizle
         tableModel.setRowCount(0);
 
-        // Retrieve list of students from service
+        // 2) Sütun başlıklarını güncellemek (bir kez yapmanız da yeterli olabilir)
+        tableModel.setColumnIdentifiers(new String[]{
+            "ID", "Name", "Surname", "Credits", "ClassLevel", "Username", "Department"
+        });
+
+        // 3) DB'den öğrencileri çek
         List<Student> students = studentService.getAllStudents();
 
-        // Populate table
+        // 4) Her öğrenci için bir satır oluştur
         for (Student s : students) {
+            String deptName = "N/A";
+            if (s.getDepartmentID() != null) {
+                Department d = departmentDAO.getByID(s.getDepartmentID());
+                deptName = (d != null) ? d.getDepartmentName() : "Unknown";
+            }
+
+            // 5) classLevel ve username ekledik
             Object[] rowData = {
                 s.getStudentID(),
                 s.getName(),
                 s.getSurname(),
                 s.getCredits(),
-                (s.getDepartmentID() != null) ? getDeptName(s.getDepartmentID()) : "N/A"
+                s.getClassLevel(), // YENİ
+                s.getUsername(), // YENİ
+                deptName
             };
             tableModel.addRow(rowData);
         }
     }
-    
+
+
+
     private String getDeptName(int deptID) {
         Department d = departmentDAO.getByID(deptID);
         return d != null ? d.getDepartmentName() : "Unknown";
@@ -252,47 +297,68 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }//GEN-LAST:event_deleteStudentButtonActionPerformed
 
     private void addStudentBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentBtnActionPerformed
+
         // TODO add your handling code here:
-        String name = studentNameField.getText().trim();
-        String surname = surnameField.getText().trim();
-        String creditsStr = creditField.getText().trim();
-        Department dept = listModel.getElementAt(departmentJList.getSelectedIndex());
+        // 1) Form alanlarını al
+    String name = studentNameField.getText().trim();
+    String surname = surnameField.getText().trim();
+    String creditsStr = creditField.getText().trim();
+    String username = usernameField.getText().trim();  // YENİ
+    String password = passwordField.getText().trim();  // YENİ
 
-        if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please fill in all fields.");
-            return;
-        }
+    // (Opsiyonel) e-posta alanı var ise
+    // String email = emailField.getText().trim();
 
-        int credits;
-        try {
-            credits = Integer.parseInt(creditsStr);
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Credits must be a valid integer.");
-            return;
-        }
+    // 2) Departman seçimi
+    if (departmentJList.getSelectedIndex() == -1) {
+        JOptionPane.showMessageDialog(this, "Please select a department from the list.");
+        return;
+    }
+    Department dept = listModel.getElementAt(departmentJList.getSelectedIndex());
 
-        // In your real logic, you might have a Department table. For the example, 
-        // we'll imagine you store dept as just a string or you have logic to find 
-        // the dept ID by name. Let's assume a simpler approach:
-        // 1) Possibly find or create the department row
-        // 2) Insert a new student with the given data
-        Student s = new Student();
-        s.setName(name);
-        s.setSurname(surname);
-        s.setCredits(credits);
-        s.setGender("N/A"); // or handle if you have that in the DB
-        s.setEmail("example@domain.com"); // or prompt user
-        // Suppose we do not use dept ID, or we have some logic to handle it
-        // For now, we set departmentID = null or 1, etc.
-        s.setDepartmentID(dept.getDepartmentID());
+    // 3) Boş alan kontrolü
+    if (name.isEmpty() || surname.isEmpty() || creditsStr.isEmpty() 
+            || username.isEmpty() || password.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please fill in all fields (including username/password).");
+        return;
+    }
 
-        int newID = adminService.createStudent(s);
-        if (newID > 0) {
-            JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to add student.");
-        }
+    // 4) Kredi alanını integer parse et
+    int credits;
+    try {
+        credits = Integer.parseInt(creditsStr);
+    } catch (NumberFormatException ex) {
+        JOptionPane.showMessageDialog(this, "Credits must be a valid integer.");
+        return;
+    }
+
+    // 5) Student nesnesi oluşturup değerleri set et
+    Student s = new Student();
+    s.setName(name);
+    s.setSurname(surname);
+    s.setCredits(credits);
+    s.setGender("N/A");    // sabit veya cinsiyet alanınız varsa ordan alabilirsiniz
+    s.setEmail("example@domain.com");  // isterseniz emailField'dan alabilirsiniz
+    s.setClassLevel(2);   // her öğrenci için 2
+    s.setUsername(username);  // kullanıcıdan alındı
+    s.setPassword(password);  // kullanıcıdan alındı
+    s.setDepartmentID(dept.getDepartmentID());
+
+    // 6) adminService ile DB'ye ekle
+    int newID = adminService.createStudent(s);
+    if (newID > 0) {
+        JOptionPane.showMessageDialog(this, "Student added successfully with ID=" + newID);
+        loadStudents();  // tabloyu güncellemek için
+    } else {
+        JOptionPane.showMessageDialog(this, "Failed to add student.");
+    }
+
+
     }//GEN-LAST:event_addStudentBtnActionPerformed
+
+    private void passwordFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_passwordFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_passwordFieldActionPerformed
 
     private void loadDepartments() {
         // 1) Retrieve the list of all departments
@@ -317,16 +383,20 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField passwordField;
     private javax.swing.JTextField studentNameField;
     private javax.swing.JTable studentsTable;
     private javax.swing.JTextField surnameField;
+    private javax.swing.JTextField usernameField;
     // End of variables declaration//GEN-END:variables
 
     @Override
-    public void onPageSetted() {
+public void onPageSetted() {
         loadDepartments();
 
     }

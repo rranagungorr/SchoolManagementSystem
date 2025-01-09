@@ -1,5 +1,6 @@
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentDAO;
 import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
@@ -128,6 +129,7 @@ public class MainFrame extends javax.swing.JFrame {
         this.setSize(new Dimension(1200, 600));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+        
         
     }
 

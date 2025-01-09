@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author PC
  */
-public class AdminManageCourse extends javax.swing.JPanel implements IPage{
+public class AdminManageCourse extends javax.swing.JPanel implements IPage {
 
     private DefaultListModel<Department> deptListModel;
     private DefaultTableModel tableModel;
@@ -30,6 +30,7 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
 
     // Service or DAO
     private AdminService adminService;
+
     /**
      * Creates new form AdminManageCourse
      */
@@ -40,8 +41,8 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
         deptListModel = new DefaultListModel<>();
         departmentList.setModel(deptListModel);
         departmentList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        
-        String[] columnNames = { "Course ID", "Course Name", "Instructor", "Department" };
+
+        String[] columnNames = {"Course ID", "Course Name", "Instructor", "Department"};
         tableModel = new DefaultTableModel(columnNames, 0) {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -52,7 +53,7 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
         coursesTable.setModel(tableModel);
         coursesTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
-    
+
     private void loadDepartments() {
         // 1) Retrieve the list of all departments
         List<Department> departmentList = departmentDAO.getAll();
@@ -65,7 +66,6 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
             deptListModel.addElement(dept);
         }
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -183,16 +183,16 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 272, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(83, 83, 83)
+                .addGap(28, 28, 28)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(38, 38, 38)
+                .addGap(93, 93, 93)
                 .addComponent(deketeCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(62, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(65, Short.MAX_VALUE)
+                .addContainerGap(215, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(deketeCourse, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -230,46 +230,72 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
 
     private void addCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCourseActionPerformed
         // TODO add your handling code here:
-        // Get the selected instructor from the combo
+        // 1) Eğitmeni (Instructor) seçtik mi?
         Instructor selectedInstructor = (Instructor) instructorComboBox.getSelectedItem();
         if (selectedInstructor == null) {
             JOptionPane.showMessageDialog(this, "Please select an instructor.");
             return;
         }
 
-        // Course name
+        // 2) Ders adı
         String courseName = courseNameField.getText().trim();
         if (courseName.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Please enter a course name.");
             return;
         }
 
-        // Department selection
+        // 3) Departman seçimi
         Department selectedDeptItem = departmentList.getSelectedValue();
         if (selectedDeptItem == null) {
-            JOptionPane.showMessageDialog(this, "Please select a department item.");
+            JOptionPane.showMessageDialog(this, "Please select a department.");
             return;
         }
 
-        // For demonstration, let's assume fieldID=2 or you have logic to map 
-        // the selected list item to an actual field ID
-        int fieldID = 2; 
-
-        // Now we create the course. We'll pass the instructor's ID
+        // 4) Eğitmen ve Departman ID'si
         int instructorID = selectedInstructor.getInstructorID();
-        // Hard-coded courseCode= "CODE123" for example, credits=3
-        int newCourseID = adminService.createCourse(courseName, "CODE123", 3, selectedDeptItem.getDepartmentID(), instructorID);
-        if (newCourseID > 0) {
-            JOptionPane.showMessageDialog(this, "Course added successfully! ID=" + newCourseID);
+        int deptID = selectedDeptItem.getDepartmentID();
 
-            // Refresh table
+        // 5) Rastgele CourseCode üretelim
+        // (Gerçek projede DB'deki varlığı kontrol edebilirsiniz.)
+        String autoCourseCode = generateRandomCourseCode();
+
+        // 6) Credits de sabit bir değer atayabilir veya formdan alabilirsiniz.
+        // Örnek olarak 3 sabit kullanıyoruz (UI'dan gelen bir textField de olabilir).
+        int credits = 3;
+
+        // 7) adminService ile ekleme
+        int newCourseID = adminService.createCourse(
+                courseName,
+                autoCourseCode, // Rastgele
+                credits,
+                deptID,
+                instructorID
+        );
+
+        if (newCourseID > 0) {
+            JOptionPane.showMessageDialog(this,
+                    "Course added successfully!\nID=" + newCourseID
+                    + "\nGenerated Code: " + autoCourseCode);
+
+            // 8) Tabloyu/ listeyi yenile
             loadCourses();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to add course.");
         }
     }//GEN-LAST:event_addCourseActionPerformed
 
-      private void loadInstructors() {
+    private String generateRandomCourseCode() {
+        // Yöntem A: "CRS" + timestamp + 4 haneli random
+        long now = System.currentTimeMillis();
+        int rand4 = (int) (Math.random() * 9000 + 1000); // 1000-9999 arası
+        return "CODE" + now + "_" + rand4;
+
+        // Yöntem B: Kısa UUID
+        // return "CODE_" + UUID.randomUUID().toString().substring(0, 8);
+        // Yöntem C: Daha karmaşık bir algoritma
+    }
+
+    private void loadInstructors() {
         // Clear existing items
         var instDAO = new InstructorDAO();
         instructorComboBox.removeAllItems();
@@ -307,7 +333,9 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage{
     // Example helper
     private String getInstructorFullName(Integer instructorID) {
         var instDAO = new InstructorDAO();
-        if (instructorID == null) return "N/A";
+        if (instructorID == null) {
+            return "N/A";
+        }
         Instructor instructor = instDAO.getByID(instructorID);
         if (instructor != null) {
             return instructor.getName() + " " + instructor.getSurname();

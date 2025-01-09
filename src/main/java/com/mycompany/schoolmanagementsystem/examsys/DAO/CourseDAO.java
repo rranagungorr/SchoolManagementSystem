@@ -97,7 +97,7 @@ public class CourseDAO {
     
     public List<Course> getAllCourses() {
         List<Course> courseList = new ArrayList<>();
-        String sql = "SELECT course_id, course_name FROM Courses";
+        String sql = "SELECT CourseID, CourseName FROM Courses";
         // Adjust to match your schema/columns
 
         try (Connection conn = DBUtil.getConnection();
@@ -106,8 +106,8 @@ public class CourseDAO {
 
             while (rs.next()) {
                 Course c = new Course();
-                c.setCourseID(rs.getInt("course_id"));
-                c.setCourseName(rs.getString("course_name"));
+                c.setCourseID(rs.getInt("CourseID"));
+                c.setCourseName(rs.getString("CourseName"));
                 courseList.add(c);
             }
         } catch (SQLException e) {
