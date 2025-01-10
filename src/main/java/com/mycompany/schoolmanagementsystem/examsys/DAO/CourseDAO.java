@@ -25,6 +25,16 @@ public class CourseDAO {
         String sql = "INSERT INTO Courses (CourseName, CourseCode, Credits, FieldID, InstructorID) "
                 + "VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            
+            // Debug için System.out.println ekliyoruz
+        System.out.println("SQL Query: " + sql);
+        System.out.println("Parameters: ");
+        System.out.println("CourseName: " + course.getCourseName());
+        System.out.println("CourseCode: " + course.getCourseCode());
+        System.out.println("Credits: " + course.getCredits());
+        System.out.println("FieldID: " + course.getFieldID());
+        System.out.println("InstructorID: " + course.getInstructorID());
+        
             pstmt.setString(1, course.getCourseName());
             pstmt.setString(2, course.getCourseCode());
             pstmt.setInt(3, course.getCredits());

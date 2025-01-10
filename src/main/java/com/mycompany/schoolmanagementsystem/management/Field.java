@@ -9,6 +9,7 @@ package com.mycompany.schoolmanagementsystem.management;
  * @author PC
  */
 public class Field {
+
     private int fieldID;
     private String fieldName;
     private int departmentID; // Foreign key to Department
@@ -44,5 +45,10 @@ public class Field {
 
     public void setDepartmentID(int departmentID) {
         this.departmentID = departmentID;
+    }
+
+    @Override
+    public String toString() {
+        return this.fieldName; // Field ismini döndür
     }
 }

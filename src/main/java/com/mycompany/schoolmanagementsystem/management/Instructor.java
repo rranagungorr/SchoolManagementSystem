@@ -9,6 +9,7 @@ package com.mycompany.schoolmanagementsystem.management;
  * @author PC
  */
 public class Instructor {
+
     private int instructorID;
     private String name;
     private String surname;
@@ -21,9 +22,9 @@ public class Instructor {
     public Instructor() {
     }
 
-    public Instructor(int instructorID, String name, String surname, 
-                      String email, String gender, Integer departmentID,
-                      String username, String password) {
+    public Instructor(int instructorID, String name, String surname,
+            String email, String gender, Integer departmentID,
+            String username, String password) {
         this.instructorID = instructorID;
         this.name = name;
         this.surname = surname;
@@ -96,5 +97,10 @@ public class Instructor {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return this.name + " " + this.surname; // Name ve Surname özelliklerini kullanın
     }
 }

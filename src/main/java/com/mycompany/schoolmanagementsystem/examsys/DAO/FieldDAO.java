@@ -109,4 +109,25 @@ public class FieldDAO {
         }
         return false;
     }
+    
+    public List<Field> getFieldsByDepartmentID(int departmentID) {
+        List<Field> fields = new ArrayList<>();
+        String sql = "SELECT * FROM Fields WHERE DepartmentID = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setInt(1, departmentID);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Field field = new Field();
+                    field.setFieldID(rs.getInt("FieldID"));
+                    field.setFieldName(rs.getString("FieldName"));
+                    field.setDepartmentID(rs.getInt("DepartmentID"));
+                    fields.add(field);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return fields;
+    }
 }
