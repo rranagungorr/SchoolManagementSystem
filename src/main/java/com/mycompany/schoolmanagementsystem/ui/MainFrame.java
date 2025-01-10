@@ -70,6 +70,13 @@ public class MainFrame extends javax.swing.JFrame {
     }
 
     /**
+     * @return the adminManageStudent
+     */
+    public AdminManageInstructor getAdminManageInstructor() {
+        return adminManageInstructor;
+    }
+    
+    /**
      * @return the studentCourseList
      */
     public StudentCourseList getStudentCourseList() {
@@ -109,6 +116,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final AdminManageCourse adminManageCourse;
     private final AdminManageExam adminManageExam;
     private final AdminManageStudent adminManageStudent;
+    private final AdminManageInstructor adminManageInstructor;
     private final InstructorMainPanel instructorMainPanel;
     private final InstructorCourseList instructorCourseList;
     private final InstructorExamList instructorExamList;
@@ -126,6 +134,7 @@ public class MainFrame extends javax.swing.JFrame {
         adminManageCourse = new AdminManageCourse();
         adminManageExam = new AdminManageExam();
         adminManageStudent = new AdminManageStudent();
+        adminManageInstructor = new AdminManageInstructor();
         
         instructorMainPanel = new InstructorMainPanel();
         instructorAttendanceRecord = new InstructorAttendanceRecord();
