@@ -177,4 +177,28 @@ public class ExamDAO {
         }
         return false;
     }
+    
+    public List<Exam> getExamsByCourse(int courseID) {
+        List<Exam> exams = new ArrayList<>();
+        String sql = "SELECT * FROM Exams WHERE CourseID = ?";
+
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setInt(1, courseID);
+
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Exam exam = new Exam();
+                    exam.setExamID(rs.getInt("ExamID"));
+                    exam.setExamName(rs.getString("ExamName"));
+                    exam.setExamDate(rs.getDate("ExamDate"));
+                    exam.setCourseID(rs.getInt("CourseID"));
+                    exams.add(exam);
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return exams;
+    }
 }

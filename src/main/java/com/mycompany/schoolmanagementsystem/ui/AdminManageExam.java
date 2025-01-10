@@ -4,15 +4,18 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.DAO.ClassroomDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
 import com.mycompany.schoolmanagementsystem.examsys.Exam;
+import com.mycompany.schoolmanagementsystem.management.Classroom;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -23,10 +26,12 @@ public class AdminManageExam extends javax.swing.JPanel {
 
     private List<Course> courseList;       // store courses in memory
     private List<Instructor> teacherList;  // store instructors in memory
+    private List<Classroom> classroomList;
 
     public AdminManageExam() {
         initComponents();
         loadTeachersAndCourses(); // loads the combo box and list
+        loadClassrooms();
         loadExamsIntoTable();     // loads the exam table
     }
 
@@ -52,8 +57,11 @@ public class AdminManageExam extends javax.swing.JPanel {
         jComboBox1 = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
+        jComboBox2 = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
         jTextField2 = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
+        jButton3 = new javax.swing.JButton();
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel1.setText("MANAGE EXAM");
@@ -101,6 +109,10 @@ public class AdminManageExam extends javax.swing.JPanel {
 
         jLabel5.setText("Classroom:");
 
+        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+
+        jLabel6.setText("Exam name:");
+
         jTextField2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jTextField2ActionPerformed(evt);
@@ -121,11 +133,13 @@ public class AdminManageExam extends javax.swing.JPanel {
                             .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                            .addComponent(jLabel5, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jLabel6, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jComboBox1, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
+                            .addComponent(jComboBox2, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))))
                 .addContainerGap(33, Short.MAX_VALUE))
         );
@@ -136,27 +150,38 @@ public class AdminManageExam extends javax.swing.JPanel {
                 .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(62, 62, 62))
+                .addGap(32, 32, 32))
         );
 
         jButton2.setText("Cancel Exam");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
+            }
+        });
+
+        jButton3.setText("Back");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
             }
         });
 
@@ -172,34 +197,35 @@ public class AdminManageExam extends javax.swing.JPanel {
                 .addGap(75, 75, 75)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 515, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(52, 52, 52)
-                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton3))
                 .addContainerGap(81, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(49, 49, 49)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jButton3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 447, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 59, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(41, 41, 41))))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(41, 41, 41))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jTextField1ActionPerformed
-
-    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
@@ -210,6 +236,15 @@ public class AdminManageExam extends javax.swing.JPanel {
         // TODO add your handling code here:
         cancelExam();
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jTextField2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        MainFrame.instance.setPage(MainFrame.instance.getAdminMainScreen());
+    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void cancelExam() {
         int selectedRow = jTable1.getSelectedRow();
@@ -245,73 +280,77 @@ public class AdminManageExam extends javax.swing.JPanel {
 
     private void addExam() {
         try {
-            // 1) Read date
-            // Expect "2025-01-31" format or similar
+            // 1) Sınav tarihini (ör: "2025-01-31") al
             String dateStr = jTextField1.getText().trim();
             if (dateStr.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Please enter a valid date (yyyy-mm-dd).");
                 return;
             }
-            // Convert to java.sql.Date
+            // java.sql.Date'e dönüştür
             java.sql.Date examDate = java.sql.Date.valueOf(dateStr);
 
-            // 2) Read classroom
-            String classroomStr = jTextField2.getText().trim();
-            if (classroomStr.isEmpty()) {
-                javax.swing.JOptionPane.showMessageDialog(this,
-                        "Please enter a valid classroom.");
+            // 2) Comboboxtan sınıf (Classroom) seç
+            int selectedClassroomIndex = jComboBox2.getSelectedIndex();
+            if (selectedClassroomIndex < 0) {
+                JOptionPane.showMessageDialog(this,
+                        "Please select a valid classroom from the dropdown!");
                 return;
             }
-            // Suppose classroom is integer (e.g., 101). If it's text, handle differently
-            int classroomID = Integer.parseInt(classroomStr);
+            // classroomList'in dolu olduğunu varsayıyoruz
+            Classroom selectedClassroom = classroomList.get(selectedClassroomIndex);
+            int classroomID = selectedClassroom.getClassroomID();
 
-            // 3) Get the selected course
+            // 3) Listedeki kursu seç
             int selectedIndex = jList1.getSelectedIndex();
             if (selectedIndex < 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Please select a course from the list!");
                 return;
             }
+            // courseList'in daha önce doldurulmuş olması lazım
             Course selectedCourse = courseList.get(selectedIndex);
 
-            // 4) Get the selected instructor
+            // 4) Comboboxtan eğitmen seç
             int comboIndex = jComboBox1.getSelectedIndex();
             if (comboIndex < 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Please select an instructor!");
                 return;
             }
+            // teacherList de daha önce doldurulmuş olmalı
             Instructor selectedInstructor = teacherList.get(comboIndex);
 
-            // 5) Create a new Exam
+            // 5) Yeni Exam nesnesi oluştur
             Exam newExam = new Exam();
-            newExam.setExamName("New Exam"); // or you might add a separate text field for name
+            // İsteğe bağlı bir textField'dan sınav adı alabilirsiniz
+            String examName = jTextField2.getText().trim(); // Yeni textField eklendi
+            if (examName.isEmpty()) {
+                examName = "New Exam"; // Varsayılan sınav adı
+            }
+            newExam.setExamName(examName);
             newExam.setExamDate(examDate);
             newExam.setCourseID(selectedCourse.getCourseID());
             newExam.setInvigilatorID(selectedInstructor.getInstructorID());
             newExam.setClassroomID(classroomID);
 
-            // 6) Insert into DB
+            // 6) Veritabanına ekle
             ExamDAO examDAO = new ExamDAO();
             int generatedID = examDAO.create(newExam);
             if (generatedID > 0) {
-                javax.swing.JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Exam created successfully (ID=" + generatedID + ")");
             } else {
-                javax.swing.JOptionPane.showMessageDialog(this,
+                JOptionPane.showMessageDialog(this,
                         "Failed to create exam!");
             }
 
-            // 7) Refresh the jTable
+            // 7) Tabloyu yenile
             loadExamsIntoTable();
 
-        } catch (NumberFormatException ex) {
-            javax.swing.JOptionPane.showMessageDialog(this,
-                    "Invalid classroom number! " + ex.getMessage());
         } catch (IllegalArgumentException ex) {
-            // This can happen if the dateStr is invalid for Date.valueOf()
-            javax.swing.JOptionPane.showMessageDialog(this,
+            // dateStr biçimi "yyyy-mm-dd" değilse .valueOf() hata verir
+            JOptionPane.showMessageDialog(this,
                     "Invalid date format: " + ex.getMessage());
         }
     }
@@ -319,31 +358,50 @@ public class AdminManageExam extends javax.swing.JPanel {
     private void loadTeachersAndCourses() {
         // 1) Load Teachers into the JComboBox
         InstructorDAO instructorDAO = new InstructorDAO();
-        List<Instructor> teacherList = instructorDAO.getAllTeachers();
+        // Burada yerel değişken değil, sınıf değişkenine atıyoruz
+        this.teacherList = instructorDAO.getAllTeachers();
 
-        // Remove any old items
         jComboBox1.removeAllItems();
-
-        // Add each Instructor object to the combo box
-        for (Instructor instructor : teacherList) {
-            jComboBox1.addItem(instructor.toString());
+        for (Instructor instructor : this.teacherList) {
+            // instructor.toString() varsayılan olarak 
+            // "com.mycompany...Instructor@1a2b3c" döndürüyor olabilir.
+            // Daha anlamlı görünmesi için Instructor sınıfında toString() 
+            // override edebilir ya da getName()+" "+getSurname() kullanabilirsiniz:
+            jComboBox1.addItem(instructor.getName() + " " + instructor.getSurname());
         }
-        // Optionally auto-select the first teacher if list not empty
-        if (!teacherList.isEmpty()) {
+        if (!this.teacherList.isEmpty()) {
             jComboBox1.setSelectedIndex(0);
         }
 
         // 2) Load Courses into the JList
         CourseDAO courseDAO = new CourseDAO();
-        List<Course> courseList = courseDAO.getAllCourses();
+        // Sınıf alanına atama
+        this.courseList = courseDAO.getAllCourses();
 
-        // JList typically uses a ListModel; we can use DefaultListModel
         DefaultListModel<String> listModel = new DefaultListModel<>();
-        for (Course c : courseList) {
-            // convert the Course to a string
+        for (Course c : this.courseList) {
             listModel.addElement(c.getCourseID() + " - " + c.getCourseName());
         }
         jList1.setModel(listModel);
+    }
+
+    private void loadClassrooms() {
+        // ClassroomDAO'yu kullanarak sınıfları veritabanından alıyoruz.
+        ClassroomDAO classroomDAO = new ClassroomDAO();
+        // Classroom listesini bir sınıf alanına atıyoruz.
+        this.classroomList = classroomDAO.getAll();
+
+        // 1) Classrooms'ı JComboBox'a yükleme
+        jComboBox2.removeAllItems(); // Önceki öğeleri temizliyoruz
+        for (Classroom classroom : this.classroomList) {
+            // Classroom nesnesinin uygun bir şekilde temsil edilmesi için
+            // toString() metodunu override edebilir veya aşağıdaki gibi bir
+            // format kullanabilirsiniz:
+            jComboBox2.addItem(classroom.getClassroomID() + " - " + classroom.getClassroomName());
+        }
+        if (!this.classroomList.isEmpty()) {
+            jComboBox2.setSelectedIndex(0); // Varsayılan olarak ilk öğeyi seç
+        }
 
     }
 
@@ -379,12 +437,15 @@ public class AdminManageExam extends javax.swing.JPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<String> jComboBox2;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JList<String> jList1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;

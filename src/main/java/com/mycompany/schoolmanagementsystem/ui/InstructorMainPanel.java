@@ -4,11 +4,13 @@
  */
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.management.Instructor;
+
 /**
  *
  * @author PC
  */
-public class InstructorMainPanel extends javax.swing.JPanel implements IPage{
+public class InstructorMainPanel extends javax.swing.JPanel implements IPage {
 
     /**
      * Creates new form InstructorMainPanel
@@ -146,10 +148,11 @@ public class InstructorMainPanel extends javax.swing.JPanel implements IPage{
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(17, 17, 17)
                         .addComponent(examListButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(30, 30, 30)
+                        .addGap(37, 37, 37)
                         .addComponent(attendanceListButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(32, 32, 32)
+                        .addGap(48, 48, 48)
                         .addComponent(courseListButton, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(87, 87, 87))
@@ -158,7 +161,7 @@ public class InstructorMainPanel extends javax.swing.JPanel implements IPage{
 
     private void examListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_examListButtonActionPerformed
         // TODO add your handling code here:
-        MainFrame.instance.setPage(this);
+        MainFrame.instance.setPage(MainFrame.instance.getInstructorExamList());
     }//GEN-LAST:event_examListButtonActionPerformed
 
     private void attendanceListButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_attendanceListButtonActionPerformed
@@ -190,6 +193,14 @@ public class InstructorMainPanel extends javax.swing.JPanel implements IPage{
 
     @Override
     public void onPageSetted() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        // Eğer kullanıcı Instructor ise
+        if (MainFrame.instance.getAccount() instanceof Instructor instructor) {
+            // Öğretmenin bilgilerini al
+            studentNameField.setText(instructor.getName());
+            studentSurnameField.setText(instructor.getSurname());
+            studentNoLabel.setText(String.valueOf(instructor.getInstructorID())); // Instructor ID
+            studentCreditLabel.setText(String.valueOf(instructor.getDepartmentID())); // Department ID
+        }
     }
+
 }

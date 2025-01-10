@@ -26,6 +26,13 @@ public class MainFrame extends javax.swing.JFrame {
     public InstructorCourseList getInstructorCourseList() {
         return instructorCourseList;
     }
+    
+    /**
+     * @return the instructorCourseList
+     */
+    public InstructorExamList getInstructorExamList() {
+        return instructorExamList;
+    }
 
     /**
      * @return the instructorAttendanceRecord
@@ -104,6 +111,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final AdminManageStudent adminManageStudent;
     private final InstructorMainPanel instructorMainPanel;
     private final InstructorCourseList instructorCourseList;
+    private final InstructorExamList instructorExamList;
     private final InstructorAttendanceRecord instructorAttendanceRecord;
     
     public MainFrame() {
@@ -122,6 +130,7 @@ public class MainFrame extends javax.swing.JFrame {
         instructorMainPanel = new InstructorMainPanel();
         instructorAttendanceRecord = new InstructorAttendanceRecord();
         instructorCourseList = new InstructorCourseList();
+        instructorExamList = new InstructorExamList();
         
         this.add(mainPanel);
         setPage(loginPanel);
