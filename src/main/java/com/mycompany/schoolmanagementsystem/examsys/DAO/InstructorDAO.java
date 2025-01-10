@@ -103,28 +103,15 @@ public class InstructorDAO {
 
     public List<Instructor> getAllTeachers() {
         List<Instructor> teacherList = new ArrayList<>();
-
-        // 1) Tablo adını ve sütunları veritabanınızdaki gerçek isimlerle değiştirin
-        String sql = "SELECT InstructorID, Name FROM Instructors";
-        // Örnek tablo adı: Instructors
-        // Örnek sütunlar: InstructorID, Name
-
-
+        String sql = "SELECT InstructorID, Name, Surname FROM Instructors"; // Surname eklendi
 
         try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Instructor t = new Instructor();
-
-                // 2) Sütun isimlerini sorguda kullandığınızla eşleştirin
                 t.setInstructorID(rs.getInt("InstructorID"));
                 t.setName(rs.getString("Name"));
-                // Diğer alanları da set edebilirsiniz (Surname, Email vs.)
-
-
-                t.setInstructorID(rs.getInt("InstructorID"));
-                t.setName(rs.getString("Name"));
-
+                t.setSurname(rs.getString("Surname")); // Soyadları çekiyoruz
                 teacherList.add(t);
             }
         } catch (SQLException e) {
