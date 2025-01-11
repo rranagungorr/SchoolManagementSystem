@@ -13,9 +13,6 @@ import javax.swing.JPanel;
  */
 public class MainFrame extends javax.swing.JFrame {
 
-    /**
-     * @return the instructorMainPanel
-     */
     public InstructorMainPanel getInstructorMainPanel() {
         return instructorMainPanel;
     }
@@ -26,19 +23,19 @@ public class MainFrame extends javax.swing.JFrame {
     public InstructorCourseList getInstructorCourseList() {
         return instructorCourseList;
     }
-    
-    /**
-     * @return the instructorCourseList
-     */
-    public InstructorExamList getInstructorExamList() {
-        return instructorExamList;
-    }
 
     /**
      * @return the instructorAttendanceRecord
      */
     public InstructorAttendanceRecord getInstructorAttendanceRecord() {
         return instructorAttendanceRecord;
+    }
+    
+    /**
+     * @return the instructorAttendanceRecord
+     */
+    public InstructorExamList getInstructorExamList() {
+        return instructorExamList;
     }
 
     /**
@@ -68,7 +65,7 @@ public class MainFrame extends javax.swing.JFrame {
     public AdminManageStudent getAdminManageStudent() {
         return adminManageStudent;
     }
-
+    
     /**
      * @return the adminManageStudent
      */
@@ -76,6 +73,10 @@ public class MainFrame extends javax.swing.JFrame {
         return adminManageInstructor;
     }
     
+    public AdminManageExamRecord getAdminManageExamRecord() {
+        return adminManageExamRecord;
+    }
+
     /**
      * @return the studentCourseList
      */
@@ -88,6 +89,10 @@ public class MainFrame extends javax.swing.JFrame {
      */
     public StudentExamList getStudentExamList() {
         return studentExamList;
+    }
+    
+    public StudentAttendanceList getStudentAttendanceList() {
+        return studentAttendanceList;
     }
 
     /**
@@ -112,15 +117,19 @@ public class MainFrame extends javax.swing.JFrame {
     private final StudentMainPanel studentMainPanel;
     private final StudentCourseList studentCourseList;
     private final StudentExamList studentExamList;
+    private final StudentAttendanceList studentAttendanceList;
     private final AdminMainScreen adminMainScreen;
     private final AdminManageCourse adminManageCourse;
     private final AdminManageExam adminManageExam;
     private final AdminManageStudent adminManageStudent;
     private final AdminManageInstructor adminManageInstructor;
+    private final AdminManageExamRecord adminManageExamRecord;
     private final InstructorMainPanel instructorMainPanel;
     private final InstructorCourseList instructorCourseList;
-    private final InstructorExamList instructorExamList;
     private final InstructorAttendanceRecord instructorAttendanceRecord;
+    private final InstructorExamList instructorExamList;
+
+    
     
     public MainFrame() {
         initComponents();
@@ -129,12 +138,14 @@ public class MainFrame extends javax.swing.JFrame {
         studentMainPanel = new StudentMainPanel();
         studentCourseList = new StudentCourseList();
         studentExamList = new StudentExamList();
+        studentAttendanceList = new StudentAttendanceList();
         
         adminMainScreen = new AdminMainScreen();
         adminManageCourse = new AdminManageCourse();
         adminManageExam = new AdminManageExam();
         adminManageStudent = new AdminManageStudent();
         adminManageInstructor = new AdminManageInstructor();
+        adminManageExamRecord = new AdminManageExamRecord();
         
         instructorMainPanel = new InstructorMainPanel();
         instructorAttendanceRecord = new InstructorAttendanceRecord();
@@ -147,8 +158,6 @@ public class MainFrame extends javax.swing.JFrame {
         this.setSize(new Dimension(1200, 600));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-        
-        
     }
 
     @SuppressWarnings("unchecked")

@@ -22,6 +22,13 @@ public class StudentExam {
         this.examID = examID;
     }
 
+    
+    // İki parametreli constructor (Eklenmesi gerekiyor)
+    public StudentExam(int studentID, int examID) {
+        this.studentID = studentID;
+        this.examID = examID;
+    }
+    
     public int getStudentExamID() {
         return studentExamID;
     }

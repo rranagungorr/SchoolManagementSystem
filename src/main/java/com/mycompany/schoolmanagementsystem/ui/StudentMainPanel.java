@@ -58,7 +58,7 @@ public class StudentMainPanel extends javax.swing.JPanel implements IPage{
         });
 
         jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
-        jLabel1.setText("Welcome Rana!");
+        jLabel1.setText("Welcome !");
 
         jPanel1.setForeground(new java.awt.Color(204, 204, 255));
 

@@ -7,14 +7,14 @@ import java.sql.SQLException;
 public class DBUtil {
     
 
-    private static final String DATABASE_NAME = "SchMng";
+    private static final String DATABASE_NAME = "school_management";
     private static final String URL = "jdbc:sqlserver://localhost:1433;"
 
       + "databaseName=" + DATABASE_NAME + ";"
       + "encrypt=true;"
       + "trustServerCertificate=true;";
     private static final String USER = "sa";
-    private static final String PASSWORD = "123456";
+    private static final String PASSWORD = "123";
 
 
     static {

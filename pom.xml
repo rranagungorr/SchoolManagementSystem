@@ -12,16 +12,16 @@
         <exec.mainClass>com.mycompany.schoolmanagementsystem.ui.MainFrame</exec.mainClass>
     </properties>
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/com.microsoft.sqlserver/mssql-jdbc -->
+        <dependency>
+            <groupId>org.netbeans.external</groupId>
+            <artifactId>AbsoluteLayout</artifactId>
+            <version>RELEASE150</version>
+        </dependency>
+        
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>12.8.1.jre11</version>
-        </dependency>
-        <dependency>
-            <groupId>com.mycompany</groupId>
-            <artifactId>cpdeneme</artifactId>
-            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
