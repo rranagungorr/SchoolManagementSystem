@@ -4,6 +4,6 @@ package com.mycompany.schoolmanagementsystem.ui;
  *
  * @author emirs
  */
-interface IPage {
+public interface IPage {
      public void onPageSetted(); 
 }

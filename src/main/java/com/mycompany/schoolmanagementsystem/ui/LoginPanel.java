@@ -7,9 +7,10 @@ import javax.swing.JOptionPane;
  *
  * @author rrana
  */
-public class LoginPanel extends javax.swing.JPanel implements IPage{
+public class LoginPanel extends javax.swing.JPanel implements IPage {
 
     String account_type = "student";
+
     /**
      * Creates new form LoginPanel
      */
@@ -48,6 +49,8 @@ public class LoginPanel extends javax.swing.JPanel implements IPage{
         });
 
         jLabel3.setText("Password");
+
+        usernameField.setText("a");
 
         jLabel2.setText("Username");
 
@@ -199,6 +202,6 @@ public class LoginPanel extends javax.swing.JPanel implements IPage{
 
     @Override
     public void onPageSetted() {
-        
+
     }
 }

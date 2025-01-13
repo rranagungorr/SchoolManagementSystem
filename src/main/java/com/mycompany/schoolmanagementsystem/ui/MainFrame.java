@@ -1,11 +1,17 @@
 package com.mycompany.schoolmanagementsystem.ui;
 
 import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentDAO;
+import com.mycompany.schoolmanagementsystem.homepageUI.AdminHomePage;
+import com.mycompany.schoolmanagementsystem.homepageUI.EventMenuSelected;
+import com.mycompany.schoolmanagementsystem.homepageUI.InstructorHomePage;
+import com.mycompany.schoolmanagementsystem.homepageUI.StudentHomePage;
 import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 import javax.swing.JPanel;
+import net.miginfocom.swing.MigLayout;
 
 /**
  *
@@ -17,94 +23,58 @@ public class MainFrame extends javax.swing.JFrame {
         return instructorMainPanel;
     }
 
-    /**
-     * @return the instructorCourseList
-     */
     public InstructorCourseList getInstructorCourseList() {
         return instructorCourseList;
     }
 
-    /**
-     * @return the instructorAttendanceRecord
-     */
     public InstructorAttendanceRecord getInstructorAttendanceRecord() {
         return instructorAttendanceRecord;
     }
-    
-    /**
-     * @return the instructorAttendanceRecord
-     */
+
     public InstructorExamList getInstructorExamList() {
         return instructorExamList;
     }
 
-    /**
-     * @return the adminMainScreen
-     */
     public AdminMainScreen getAdminMainScreen() {
         return adminMainScreen;
     }
 
-    /**
-     * @return the adminManageCourse
-     */
     public AdminManageCourse getAdminManageCourse() {
         return adminManageCourse;
     }
 
-    /**
-     * @return the adminManageExam
-     */
     public AdminManageExam getAdminManageExam() {
         return adminManageExam;
     }
 
-    /**
-     * @return the adminManageStudent
-     */
     public AdminManageStudent getAdminManageStudent() {
         return adminManageStudent;
     }
-    
-    /**
-     * @return the adminManageStudent
-     */
+
     public AdminManageInstructor getAdminManageInstructor() {
         return adminManageInstructor;
     }
-    
+
     public AdminManageExamRecord getAdminManageExamRecord() {
         return adminManageExamRecord;
     }
 
-    /**
-     * @return the studentCourseList
-     */
     public StudentCourseList getStudentCourseList() {
         return studentCourseList;
     }
 
-    /**
-     * @return the studentExamList
-     */
     public StudentExamList getStudentExamList() {
         return studentExamList;
     }
-    
+
     public StudentAttendanceList getStudentAttendanceList() {
         return studentAttendanceList;
     }
 
-    /**
-     * @return the account
-     */
     public Object getAccount() {
         return account;
     }
 
-    /**
-     * @param account the account to set
-     */
     public void setAccount(Object account) {
         this.account = account;
     }
@@ -112,7 +82,7 @@ public class MainFrame extends javax.swing.JFrame {
     public static MainFrame instance;
 
     private Object account;
-    
+
     private final LoginPanel loginPanel;
     private final StudentMainPanel studentMainPanel;
     private final StudentCourseList studentCourseList;
@@ -128,9 +98,10 @@ public class MainFrame extends javax.swing.JFrame {
     private final InstructorCourseList instructorCourseList;
     private final InstructorAttendanceRecord instructorAttendanceRecord;
     private final InstructorExamList instructorExamList;
+    private final AdminHomePage adminHomePage;
+    private final InstructorHomePage inHomePage;
+    private final StudentHomePage studentHomePage;
 
-    
-    
     public MainFrame() {
         initComponents();
 
@@ -139,25 +110,33 @@ public class MainFrame extends javax.swing.JFrame {
         studentCourseList = new StudentCourseList();
         studentExamList = new StudentExamList();
         studentAttendanceList = new StudentAttendanceList();
-        
+
         adminMainScreen = new AdminMainScreen();
         adminManageCourse = new AdminManageCourse();
         adminManageExam = new AdminManageExam();
         adminManageStudent = new AdminManageStudent();
         adminManageInstructor = new AdminManageInstructor();
         adminManageExamRecord = new AdminManageExamRecord();
-        
+
         instructorMainPanel = new InstructorMainPanel();
         instructorAttendanceRecord = new InstructorAttendanceRecord();
         instructorCourseList = new InstructorCourseList();
         instructorExamList = new InstructorExamList();
-        
+
+        adminHomePage = new AdminHomePage();
+        inHomePage = new InstructorHomePage();
+        studentHomePage = new StudentHomePage();
+
         this.add(mainPanel);
         setPage(loginPanel);
-        
-        this.setSize(new Dimension(1200, 600));
+
+        this.setSize(new Dimension(1440, 750));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
+    }
+
+    public JPanel getMainPanel() {
+        return this.mainPanel;
     }
 
     @SuppressWarnings("unchecked")
@@ -167,20 +146,12 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setUndecorated(true);
 
-        mainPanel.setBackground(new java.awt.Color(225, 225, 225));
-        mainPanel.setLayout(new java.awt.GridLayout());
-
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 1200, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(mainPanel, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
-        );
+        mainPanel.setBackground(new java.awt.Color(235, 235, 235));
+        mainPanel.setPreferredSize(new java.awt.Dimension(1425, 706));
+        mainPanel.setLayout(new java.awt.BorderLayout());
+        getContentPane().add(mainPanel, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -220,16 +191,25 @@ public class MainFrame extends javax.swing.JFrame {
             }
         });
     }
-    
-    public LoginPanel getLoginPanel(){
+
+    public LoginPanel getLoginPanel() {
         return loginPanel;
     }
 
     public final void setPage(JPanel page) {
         mainPanel.removeAll();
-        mainPanel.add(page);
+        mainPanel.add(page, BorderLayout.CENTER);
         mainPanel.revalidate();
         mainPanel.repaint();
+        System.out.println("Page Setted!");
+
+        if (page instanceof IPage iPage) {
+            iPage.onPageSetted();
+        }
+    }
+
+    public final void setPagePro(JPanel page) {
+
         System.out.println("Page Setted!");
 
         if (page instanceof IPage iPage) {
@@ -243,13 +223,17 @@ public class MainFrame extends javax.swing.JFrame {
 
     public void login() {
         if (MainFrame.instance.getAccount() instanceof Student) {
-            setPage(studentMainPanel);
-        }else if (MainFrame.instance.getAccount() instanceof Instructor) {
-            setPage(instructorMainPanel);
-        }else if (MainFrame.instance.getAccount() instanceof Admin) {
-            setPage(adminMainScreen);
+            setPage(studentHomePage);
+        } else if (MainFrame.instance.getAccount() instanceof Instructor) {
+            setPage(inHomePage);
+        } else if (MainFrame.instance.getAccount() instanceof Admin) {
+            setPage(adminHomePage);
+            if (MainFrame.instance.getAccount() == null) {
+                System.out.println("nullllllllll");
+            }
+
         }
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

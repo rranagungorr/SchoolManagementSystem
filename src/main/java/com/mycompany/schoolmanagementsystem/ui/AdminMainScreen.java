@@ -164,7 +164,8 @@ public class AdminMainScreen extends javax.swing.JPanel {
 
     private void stuButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stuButtonActionPerformed
         // TODO add your handling code here:
-        MainFrame.instance.setPage(MainFrame.instance.getAdminManageStudent());
+        AdminManageStudent adminManageStudent = MainFrame.instance.getAdminManageStudent();
+        MainFrame.instance.setPage(adminManageStudent);
     }//GEN-LAST:event_stuButtonActionPerformed
 
     private void insButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_insButtonActionPerformed

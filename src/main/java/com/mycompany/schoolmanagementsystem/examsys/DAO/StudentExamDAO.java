@@ -132,7 +132,7 @@ public class StudentExamDAO {
     // StudentExamDAO.java (example method)
     public List<Exam> getExamsByStudent(int studentID) {
         List<Exam> examList = new ArrayList<>();
-        String sql = "SELECT e.ExamID, e.ExamName, e.ExamDate"
+        String sql = "SELECT e.ExamID, e.ExamName, e.ExamDate "
                 + "FROM StudentExams se "
                 + "JOIN Exams e ON se.ExamID = e.ExamID "
                 + "JOIN Courses c ON e.CourseID = c.CourseID "
