@@ -16,19 +16,14 @@ public class CourseSchedule {
     private int scheduleID;
     private int courseID;      // FK to Course
     private Date scheduleDate;
-    private Time startTime;
-    private Time endTime;
-
+    
     public CourseSchedule() {
     }
 
-    public CourseSchedule(int scheduleID, int courseID, Date scheduleDate,
-                          Time startTime, Time endTime) {
+    public CourseSchedule(int scheduleID, int courseID, Date scheduleDate) {
         this.scheduleID = scheduleID;
         this.courseID = courseID;
         this.scheduleDate = scheduleDate;
-        this.startTime = startTime;
-        this.endTime = endTime;
     }
 
     public int getScheduleID() {
@@ -55,19 +50,4 @@ public class CourseSchedule {
         this.scheduleDate = scheduleDate;
     }
 
-    public Time getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(Time startTime) {
-        this.startTime = startTime;
-    }
-
-    public Time getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(Time endTime) {
-        this.endTime = endTime;
-    }
-}
+   }

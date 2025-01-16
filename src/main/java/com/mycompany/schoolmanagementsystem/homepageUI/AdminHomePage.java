@@ -9,9 +9,13 @@ import com.mycompany.schoolmanagementsystem.management.Student;
 import com.mycompany.schoolmanagementsystem.ui.IPage;
 import com.mycompany.schoolmanagementsystem.ui.MainFrame;
 import java.awt.Color;
+import java.awt.Font;
 import java.awt.Image;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
 /**
@@ -57,9 +61,10 @@ public class AdminHomePage extends javax.swing.JPanel implements IPage {
             public void menuSelected(int menuIndex, int subMenuIndex) {
                 System.out.println("Menu Index : " + menuIndex + " SubMenu Index " + subMenuIndex);
                 if (menuIndex == 0) {
-
-                    mainForm.showForm(MainFrame.instance.getAdminManageStudent());
+                    JPanel panel = MainFrame.instance.getAdminManageStudent();
+                    mainForm.showForm(panel);
                     MainFrame.instance.setPagePro(MainFrame.instance.getAdminManageStudent());
+                    //MainFrame.instance.getCalendar().isWithinStudentRegistrationPeriod(MainFrame.instance.getTimeManager().getCurrentDate(),panel);
 
                 }
                 if (menuIndex == 1) {
@@ -81,6 +86,11 @@ public class AdminHomePage extends javax.swing.JPanel implements IPage {
 
                 }
                 if (menuIndex == 4) {
+
+                    mainForm.showForm(MainFrame.instance.getAdminManageExam());
+                    MainFrame.instance.setPagePro(MainFrame.instance.getAdminManageExam());
+                }
+                if (menuIndex == 5) {
 
                     mainForm.showForm(MainFrame.instance.getAdminManageExamRecord());
                     MainFrame.instance.setPagePro(MainFrame.instance.getAdminManageExamRecord());

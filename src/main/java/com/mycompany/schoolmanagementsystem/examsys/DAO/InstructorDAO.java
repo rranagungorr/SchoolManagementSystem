@@ -22,21 +22,16 @@ public class InstructorDAO {
 
     // CREATE
     public int create(Instructor instructor) {
-        String sql = "INSERT INTO Instructors (Name, Surname, Email, Gender, DepartmentID, Username, Password) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Instructors (Name, Surname, Email, Gender, Username, Password) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
         try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, instructor.getName());
             pstmt.setString(2, instructor.getSurname());
             pstmt.setString(3, instructor.getEmail());
             pstmt.setString(4, instructor.getGender());
-            if (instructor.getDepartmentID() != null) {
-                pstmt.setInt(5, instructor.getDepartmentID());
-            } else {
-                pstmt.setNull(5, Types.INTEGER);
-            }
-            pstmt.setString(6, instructor.getUsername());
-            pstmt.setString(7, instructor.getPassword());
+            pstmt.setString(5, instructor.getUsername());
+            pstmt.setString(6, instructor.getPassword());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -65,7 +60,6 @@ public class InstructorDAO {
                     i.setSurname(rs.getString("Surname"));
                     i.setEmail(rs.getString("Email"));
                     i.setGender(rs.getString("Gender"));
-                    i.setDepartmentID((Integer) rs.getObject("DepartmentID"));
                     i.setUsername(rs.getString("Username"));
                     i.setPassword(rs.getString("Password"));
                     return i;
@@ -90,7 +84,6 @@ public class InstructorDAO {
                 i.setSurname(rs.getString("Surname"));
                 i.setEmail(rs.getString("Email"));
                 i.setGender(rs.getString("Gender"));
-                i.setDepartmentID((Integer) rs.getObject("DepartmentID"));
                 i.setUsername(rs.getString("Username"));
                 i.setPassword(rs.getString("Password"));
                 list.add(i);
@@ -101,6 +94,7 @@ public class InstructorDAO {
         return list;
     }
 
+    // READ PARTIAL
     public List<Instructor> getAllTeachers() {
         List<Instructor> teacherList = new ArrayList<>();
         String sql = "SELECT InstructorID, Name, Surname FROM Instructors"; // Surname eklendi
@@ -123,23 +117,16 @@ public class InstructorDAO {
     // UPDATE
     public boolean update(Instructor instructor) {
         String sql = "UPDATE Instructors "
-                + "SET Name = ?, Surname = ?, Email = ?, Gender = ?, DepartmentID = ?, Username = ?, Password = ? "
+                + "SET Name = ?, Surname = ?, Email = ?, Gender = ?, Username = ?, Password = ? "
                 + "WHERE InstructorID = ?";
         try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, instructor.getName());
             pstmt.setString(2, instructor.getSurname());
             pstmt.setString(3, instructor.getEmail());
             pstmt.setString(4, instructor.getGender());
-
-            if (instructor.getDepartmentID() != null) {
-                pstmt.setInt(5, instructor.getDepartmentID());
-            } else {
-                pstmt.setNull(5, Types.INTEGER);
-            }
-
-            pstmt.setString(6, instructor.getUsername());
-            pstmt.setString(7, instructor.getPassword());
-            pstmt.setInt(8, instructor.getInstructorID());
+            pstmt.setString(5, instructor.getUsername());
+            pstmt.setString(6, instructor.getPassword());
+            pstmt.setInt(7, instructor.getInstructorID());
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -161,4 +148,122 @@ public class InstructorDAO {
         }
         return false;
     }
+
+    public String generateEmail(String firstName, String lastName) {
+        String baseEmail = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@stu.fsm.edu.tr";
+        String alternateEmail = firstName.toLowerCase() + "_" + lastName.toLowerCase() + "@stu.fsm.edu.tr";
+
+        if (emailExists(baseEmail)) {
+            if (!emailExists(alternateEmail)) {
+                return alternateEmail;
+            } else {
+                int counter = 1;
+                String newEmail;
+                do {
+                    newEmail = firstName.toLowerCase() + counter + "." + lastName.toLowerCase() + "@stu.fsm.edu.tr";
+                    counter++;
+                } while (emailExists(newEmail));
+                return newEmail;
+            }
+        }
+        return baseEmail;
+    }
+
+    public boolean emailExists(String email) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Email = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, email);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean instructorExists(String name, String surname, String email, String username) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Name = ? AND Surname = ? AND (Email = ? OR Username = ?)";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+
+            pstmt.setString(1, name);
+            pstmt.setString(2, surname);
+            pstmt.setString(3, email);
+            pstmt.setString(4, username);
+
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Eğer kayıt varsa true döner
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean usernameExists(String username) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Username = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean passwordExists(String password) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Password = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, password);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean usernameExistsForOtherID(String username, int instructorID) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Username = ? AND InstructorID != ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, username);
+            pstmt.setInt(2, instructorID);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean passwordExistsForOtherID(String password, int instructorID) {
+        String sql = "SELECT COUNT(*) FROM Instructors WHERE Password = ? AND InstructorID != ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            pstmt.setString(1, password);
+            pstmt.setInt(2, instructorID);
+            try ( ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

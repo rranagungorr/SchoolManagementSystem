@@ -2,20 +2,18 @@ package com.mycompany.schoolmanagementsystem.ui;
 
 import com.mycompany.schoolmanagementsystem.examsys.DAO.LoginDAO;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 
-/**
- *
- * @author rrana
- */
 public class LoginPanel extends javax.swing.JPanel implements IPage {
 
     String account_type = "student";
+    Date selectedDate;
 
-    /**
-     * Creates new form LoginPanel
-     */
     public LoginPanel() {
         initComponents();
+
     }
 
     /**
@@ -37,6 +35,7 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
         stuRadioButton = new javax.swing.JRadioButton();
         adminRadioButton = new javax.swing.JRadioButton();
         instRadioButton = new javax.swing.JRadioButton();
+        dateChooser = new com.toedter.calendar.JDateChooser();
 
         loginbtn.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         loginbtn.setText("Login");
@@ -83,6 +82,8 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
             }
         });
 
+        dateChooser.setBackground(new java.awt.Color(204, 204, 255));
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -106,13 +107,18 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
                                 .addComponent(jLabel1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jLabel2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(usernameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(usernameField, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 243, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, 159, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(477, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(145, 145, 145)
+                .addGap(91, 91, 91)
+                .addComponent(dateChooser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 39, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(15, 15, 15)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -135,6 +141,17 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
 
     private void loginbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginbtnActionPerformed
         // TODO add your handling code here:
+
+        selectedDate = dateChooser.getDate();
+
+        // Tarihi LocalDate'e dönüştür
+        if (selectedDate != null) {
+            LocalDate localDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            System.out.println("Seçilen tarih (LocalDate): " + localDate);
+        } else {
+            System.out.println("Lütfen bir tarih seçin!");
+        }
+
         LoginDAO loginDAO = new LoginDAO();
 
         // Suppose these come from user input:
@@ -157,7 +174,7 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
                 account = loginDAO.loginStudent(username, password);
             }
         }
-        
+
         if (account != null) {
             MainFrame.instance.setAccount(account);
             MainFrame.instance.login();
@@ -190,6 +207,7 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JRadioButton adminRadioButton;
     private javax.swing.ButtonGroup buttonGroup1;
+    private com.toedter.calendar.JDateChooser dateChooser;
     private javax.swing.JRadioButton instRadioButton;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;

@@ -8,7 +8,6 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.AdminDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
-import com.mycompany.schoolmanagementsystem.examsys.DAO.FieldDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentCourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.*;
@@ -19,7 +18,6 @@ import com.mycompany.schoolmanagementsystem.examsys.StudentExam;
 import com.mycompany.schoolmanagementsystem.management.*;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
-import com.mycompany.schoolmanagementsystem.management.Field;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.sql.Date;
 import java.sql.Time;
@@ -36,7 +34,7 @@ public class InstructorService {
     private CourseScheduleDAO courseScheduleDAO;
     private AttendanceDAO attendanceDAO;
     private StudentCourseDAO studentCourseDAO;
-    private CourseDAO courseDAO;
+      CourseDAO courseDAO;
     private ExamResultDAO examResultDAO;
     private StudentExamDAO studentExamDAO;
 
@@ -51,12 +49,10 @@ public class InstructorService {
     }
 
     // ----------- Scheduling a Course -----------
-    public int setCourseSchedule(int courseID, Date scheduleDate, Time startTime, Time endTime) {
+    public int setCourseSchedule(int courseID, Date scheduleDate) {
         CourseSchedule cs = new CourseSchedule();
         cs.setCourseID(courseID);
         cs.setScheduleDate(scheduleDate);
-        cs.setStartTime(startTime);
-        cs.setEndTime(endTime);
         return courseScheduleDAO.create(cs);
     }
 
@@ -122,7 +118,7 @@ public class InstructorService {
                 .map(studentDAO::getByID)
                 .collect(Collectors.toList());
     }
-
+    
     public List<Course> getCoursesByInstructor(int instructorID) {
         return courseDAO.getCoursesByInstructor(instructorID);
     }

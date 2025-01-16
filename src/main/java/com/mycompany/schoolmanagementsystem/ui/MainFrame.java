@@ -1,6 +1,8 @@
 package com.mycompany.schoolmanagementsystem.ui;
 
+import com.mycompany.schoolmanagementsystem.examsys.AcademicCalendar;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentDAO;
+import com.mycompany.schoolmanagementsystem.examsys.TimeManager;
 import com.mycompany.schoolmanagementsystem.homepageUI.AdminHomePage;
 import com.mycompany.schoolmanagementsystem.homepageUI.EventMenuSelected;
 import com.mycompany.schoolmanagementsystem.homepageUI.InstructorHomePage;
@@ -9,7 +11,9 @@ import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
+import java.time.LocalDate;
 import javax.swing.JPanel;
 import net.miginfocom.swing.MigLayout;
 
@@ -79,9 +83,20 @@ public class MainFrame extends javax.swing.JFrame {
         this.account = account;
     }
 
+    public TimeManager getTimeManager() {
+        return timeManager;
+    }
+
+    public AcademicCalendar getCalendar() {
+        return calendar;
+    }
+
     public static MainFrame instance;
 
     private Object account;
+
+    private final TimeManager timeManager;
+    private final AcademicCalendar calendar;
 
     private final LoginPanel loginPanel;
     private final StudentMainPanel studentMainPanel;
@@ -127,16 +142,23 @@ public class MainFrame extends javax.swing.JFrame {
         inHomePage = new InstructorHomePage();
         studentHomePage = new StudentHomePage();
 
+        // Zaman yöneticisini başlat
+        timeManager = TimeManager.getInstance();
+
+        // Akademik takvim oluştur
+        calendar = new AcademicCalendar(
+                LocalDate.of(2024, 9, 1), LocalDate.of(2024, 9, 25), // Öğrenci Kayıt tarihleri
+                LocalDate.of(2024, 9, 30), LocalDate.of(2024, 10, 6), // Ders Kayıt tarihleri
+                LocalDate.of(2024, 11, 4), LocalDate.of(2025, 1, 3), // Ara sınav tarihleri
+                LocalDate.of(2025, 1, 13), LocalDate.of(2025, 1, 25) // Final sınav tarihleri
+        );
+
         this.add(mainPanel);
         setPage(loginPanel);
 
         this.setSize(new Dimension(1440, 750));
         this.setResizable(false);
         this.setLocationRelativeTo(null);
-    }
-
-    public JPanel getMainPanel() {
-        return this.mainPanel;
     }
 
     @SuppressWarnings("unchecked")
@@ -146,7 +168,6 @@ public class MainFrame extends javax.swing.JFrame {
         mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
 
         mainPanel.setBackground(new java.awt.Color(235, 235, 235));
         mainPanel.setPreferredSize(new java.awt.Dimension(1425, 706));
@@ -156,9 +177,6 @@ public class MainFrame extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -194,6 +212,21 @@ public class MainFrame extends javax.swing.JFrame {
 
     public LoginPanel getLoginPanel() {
         return loginPanel;
+    }
+
+    public JPanel getMainPanel() {
+        return this.mainPanel;
+    }
+
+    public static void disablePanelComponents(JPanel panel) {
+        for (java.awt.Component component : panel.getComponents()) {
+            component.setEnabled(false); // Mevcut bileşeni devre dışı bırak
+         
+            // Eğer bileşen bir JPanel ise, alt bileşenlerini de devre dışı bırak
+            if (component instanceof JPanel) {
+                disablePanelComponents((JPanel) component);
+            }
+        }
     }
 
     public final void setPage(JPanel page) {

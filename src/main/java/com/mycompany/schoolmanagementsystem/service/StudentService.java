@@ -8,7 +8,6 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.AdminDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
-import com.mycompany.schoolmanagementsystem.examsys.DAO.FieldDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentCourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.*;
@@ -19,7 +18,6 @@ import com.mycompany.schoolmanagementsystem.examsys.StudentExam;
 import com.mycompany.schoolmanagementsystem.management.*;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
-import com.mycompany.schoolmanagementsystem.management.Field;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.util.List;
 

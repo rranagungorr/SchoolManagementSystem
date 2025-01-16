@@ -8,33 +8,35 @@ package com.mycompany.schoolmanagementsystem.management;
  *
  * @author PC
  */
-public class Instructor {
-
+public class Instructor {   
+    
     private int instructorID;
     private String name;
     private String surname;
     private String email;
     private String gender;
-    private Integer departmentID; // can be null
+    private Integer departmentID;
     private String username;
     private String password;
 
-    public Instructor() {
-    }
+    // Constructor ve getter/setter'lar
+    public Instructor() {}
 
     public Instructor(int instructorID, String name, String surname,
-            String email, String gender, Integer departmentID,
-            String username, String password) {
+                      String email, String gender, int departmentID,
+                      String username, String password) {
         this.instructorID = instructorID;
         this.name = name;
         this.surname = surname;
         this.email = email;
         this.gender = gender;
-        this.departmentID = departmentID;
+        this.departmentID = departmentID; // NULL olamaz
         this.username = username;
         this.password = password;
     }
 
+ 
+    
     public int getInstructorID() {
         return instructorID;
     }
@@ -75,14 +77,6 @@ public class Instructor {
         this.gender = gender;
     }
 
-    public Integer getDepartmentID() {
-        return departmentID;
-    }
-
-    public void setDepartmentID(Integer departmentID) {
-        this.departmentID = departmentID;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -99,8 +93,16 @@ public class Instructor {
         this.password = password;
     }
 
+    public Integer getDepartmentID() {
+        return departmentID;
+    }
+    
+    public void setDepartmentID(Integer departmentID) {
+        this.departmentID = departmentID;
+    }
     @Override
     public String toString() {
-        return this.name + " " + this.surname; // Name ve Surname özelliklerini kullanın
+        return name + " " + surname; // Eğitmenin adı ve soyadı
     }
+
 }

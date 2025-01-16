@@ -8,14 +8,12 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.AdminDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ExamDAO;
-import com.mycompany.schoolmanagementsystem.examsys.DAO.FieldDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.StudentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
-import com.mycompany.schoolmanagementsystem.management.Field;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import java.util.List;
@@ -26,7 +24,6 @@ import java.util.List;
  */
 public class AdminService {
     private DepartmentDAO departmentDAO;
-    private FieldDAO fieldDAO;
     private CourseDAO courseDAO;
     private ExamDAO examDAO;
     private InstructorDAO instructorDAO;
@@ -38,7 +35,6 @@ public class AdminService {
         // Ideally, you might use Dependency Injection
         // or a DI framework to manage these.
         this.departmentDAO = new DepartmentDAO();
-        this.fieldDAO = new FieldDAO();
         this.courseDAO = new CourseDAO();
         this.examDAO = new ExamDAO();
         this.instructorDAO = new InstructorDAO();
@@ -74,52 +70,52 @@ public class AdminService {
         return departmentDAO.getAll();
     }
 
-    // ----------- Field Management -----------
-    public int createField(String fieldName, int departmentID) {
-        Field field = new Field();
-        field.setFieldName(fieldName);
-        field.setDepartmentID(departmentID);
-        return fieldDAO.create(field);
-    }
-
-    public boolean updateField(int fieldID, String newName, int newDepartmentID) {
-        Field f = fieldDAO.getByID(fieldID);
-        if (f == null) {
-            return false;
-        }
-        f.setFieldName(newName);
-        f.setDepartmentID(newDepartmentID);
-        return fieldDAO.update(f);
-    }
-
-    public boolean deleteField(int fieldID) {
-        return fieldDAO.delete(fieldID);
-    }
 
     // ----------- Course Management -----------
-    public int createCourse(String courseName, String courseCode, int credits, int fieldID, Integer instructorID) {
-        Course c = new Course();
-        c.setCourseName(courseName);
-        c.setCourseCode(courseCode);
-        c.setCredits(credits);
-        c.setFieldID(fieldID);
-        c.setInstructorID(instructorID);
-        return courseDAO.create(c);
-    }
+   public int createCourse(String courseName, String courseCode, int credits, int departmentID, Integer instructorID, 
+                        int classroomID, int hours, int semesterID, String startTime, String endTime, 
+                        String weekDay,int classlevel) {
+    Course c = new Course();
+    c.setCourseName(courseName);
+    c.setCourseCode(courseCode);
+    c.setCredits(credits);
+    c.setDepartmentID(departmentID);
+    c.setInstructorID(instructorID);
+    c.setClassroomID(classroomID); // Yeni özellik
+    c.setHours(hours); // Yeni özellik
+    c.setSemesterID(semesterID); // Yeni özellik
+    c.setStartTime(startTime); // Yeni özellik
+    c.setEndTime(endTime); // Yeni özellik
+    c.setWeekDay(weekDay); // Yeni özellik
+    c.setClassLevel(classlevel); // Yeni özellik
+    return courseDAO.create(c);
+}
 
-    public boolean updateCourse(int courseID, String newName, String newCode, int newCredits,
-                                int newFieldID, Integer newInstructorID) {
-        Course c = courseDAO.getByID(courseID);
-        if (c == null) {
-            return false;
-        }
-        c.setCourseName(newName);
-        c.setCourseCode(newCode);
-        c.setCredits(newCredits);
-        c.setFieldID(newFieldID);
-        c.setInstructorID(newInstructorID);
-        return courseDAO.update(c);
+
+
+  public boolean updateCourse(int courseID, String newName, String newCode, int newCredits, int newDepartmentID,
+                            Integer newInstructorID, int newClassroomID, int newHours, int newSemesterID, 
+                            String newStartTime, String newEndTime, String newWeekDay,int classlevel) {
+    Course c = courseDAO.getByID(courseID);
+    if (c == null) {
+        return false;
     }
+    c.setCourseName(newName);
+    c.setCourseCode(newCode);
+    c.setCredits(newCredits);
+    c.setDepartmentID(newDepartmentID);
+    c.setInstructorID(newInstructorID);
+    c.setClassroomID(newClassroomID);
+    c.setHours(newHours);
+    c.setSemesterID(newSemesterID);
+    c.setStartTime(newStartTime);
+    c.setEndTime(newEndTime);
+    c.setWeekDay(newWeekDay);
+    c.setClassLevel(classlevel); 
+    return courseDAO.update(c);
+}
+
+
 
     public boolean deleteCourse(int courseID) {
         return courseDAO.delete(courseID);

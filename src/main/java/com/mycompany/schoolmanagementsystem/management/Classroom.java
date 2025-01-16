@@ -9,6 +9,7 @@ package com.mycompany.schoolmanagementsystem.management;
  * @author PC
  */
 public class Classroom {
+
     private int classroomID;
     private String classroomName;
     private int capacity;
@@ -44,6 +45,11 @@ public class Classroom {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
+    }
+
+    @Override
+    public String toString() {
+        return classroomName; // Sınıf adı
     }
 
 }

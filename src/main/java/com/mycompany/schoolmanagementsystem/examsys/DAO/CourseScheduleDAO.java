@@ -20,14 +20,12 @@ import java.util.List;
 public class CourseScheduleDAO {
     // CREATE
     public int create(CourseSchedule schedule) {
-        String sql = "INSERT INTO CourseSchedules (CourseID, ScheduleDate, StartTime, EndTime) "
+        String sql = "INSERT INTO CourseSchedules (CourseID, ScheduleDate) "
                    + "VALUES (?, ?, ?, ?)";
         try (Connection conn = DBUtil.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, schedule.getCourseID());
             pstmt.setDate(2, schedule.getScheduleDate());
-            pstmt.setTime(3, schedule.getStartTime());
-            pstmt.setTime(4, schedule.getEndTime());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
@@ -55,8 +53,7 @@ public class CourseScheduleDAO {
                     cs.setScheduleID(rs.getInt("ScheduleID"));
                     cs.setCourseID(rs.getInt("CourseID"));
                     cs.setScheduleDate(rs.getDate("ScheduleDate"));
-                    cs.setStartTime(rs.getTime("StartTime"));
-                    cs.setEndTime(rs.getTime("EndTime"));
+                    
                     return cs;
                 }
             }
@@ -78,8 +75,7 @@ public class CourseScheduleDAO {
                 cs.setScheduleID(rs.getInt("ScheduleID"));
                 cs.setCourseID(rs.getInt("CourseID"));
                 cs.setScheduleDate(rs.getDate("ScheduleDate"));
-                cs.setStartTime(rs.getTime("StartTime"));
-                cs.setEndTime(rs.getTime("EndTime"));
+        
                 list.add(cs);
             }
         } catch (SQLException e) {
@@ -97,9 +93,7 @@ public class CourseScheduleDAO {
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, schedule.getCourseID());
             pstmt.setDate(2, schedule.getScheduleDate());
-            pstmt.setTime(3, schedule.getStartTime());
-            pstmt.setTime(4, schedule.getEndTime());
-            pstmt.setInt(5, schedule.getScheduleID());
+          
 
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;

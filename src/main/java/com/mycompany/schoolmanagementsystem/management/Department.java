@@ -21,13 +21,6 @@ public class Department {
         this.departmentName = departmentName;
     }
 
-    public int getDepartmentID() {
-        return departmentID;
-    }
-
-    public void setDepartmentID(int departmentID) {
-        this.departmentID = departmentID;
-    }
 
     public String getDepartmentName() {
         return departmentName;
@@ -37,6 +30,15 @@ public class Department {
         this.departmentName = departmentName;
     }
 
+
+    public int getDepartmentID() {
+        return departmentID;
+    }
+
+    public void setDepartmentID(int departmentID) {
+        this.departmentID = departmentID;
+    }
+    
     @Override
     public String toString() {
         // This ensures the JList will display the name instead of the default object reference

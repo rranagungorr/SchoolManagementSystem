@@ -24,13 +24,13 @@ public class StudentExamDAO {
     // CREATE
     public int create(StudentExam studentExam) {
         String sql = "INSERT INTO StudentExams (StudentID, ExamID) VALUES (?, ?)";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, studentExam.getStudentID());
             pstmt.setInt(2, studentExam.getExamID());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                try ( ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         return rs.getInt(1); // new StudentExamID
                     }
@@ -42,12 +42,27 @@ public class StudentExamDAO {
         return 0;
     }
 
+    public boolean addStudentToExam(int studentID, int examID) {
+        try ( Connection conn = DBUtil.getConnection()) {
+            String query = "INSERT INTO StudentExams (StudentID, ExamID) VALUES (?, ?)";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, examID);
+
+            int rowsAffected = stmt.executeUpdate();
+            return rowsAffected > 0; // Başarıyla eklendi
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Başarısız
+    }
+
     // READ by ID
     public StudentExam getByID(int studentExamID) {
         String sql = "SELECT * FROM StudentExams WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExamID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     StudentExam se = new StudentExam();
                     se.setStudentExamID(rs.getInt("StudentExamID"));
@@ -66,7 +81,7 @@ public class StudentExamDAO {
     public List<StudentExam> getAll() {
         List<StudentExam> list = new ArrayList<>();
         String sql = "SELECT * FROM StudentExams";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql); ResultSet rs = pstmt.executeQuery()) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 StudentExam se = new StudentExam();
                 se.setStudentExamID(rs.getInt("StudentExamID"));
@@ -85,7 +100,7 @@ public class StudentExamDAO {
     // but let's provide a simple method for completeness.
     public boolean update(StudentExam studentExam) {
         String sql = "UPDATE StudentExams SET StudentID = ?, ExamID = ? WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExam.getStudentID());
             pstmt.setInt(2, studentExam.getExamID());
             pstmt.setInt(3, studentExam.getStudentExamID());
@@ -101,7 +116,7 @@ public class StudentExamDAO {
     // DELETE
     public boolean delete(int studentExamID) {
         String sql = "DELETE FROM StudentExams WHERE StudentExamID = ?";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentExamID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -111,14 +126,29 @@ public class StudentExamDAO {
         return false;
     }
 
+    public boolean deleteStudentExam(int studentID, int examID) {
+        String query = "DELETE FROM StudentExams WHERE StudentID = ? AND ExamID = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, examID);
+
+            int affectedRows = stmt.executeUpdate();
+            return affectedRows > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     // EXTRA FUNCTIONALITY: Get all Exams for a specific Student
     // This can be used for "get student courses" style logic, adapted to exams.
     public List<Integer> getExamIDsByStudent(int studentID) {
         List<Integer> examIDs = new ArrayList<>();
         String sql = "SELECT ExamID FROM StudentExams WHERE StudentID = ?";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     examIDs.add(rs.getInt("ExamID"));
                 }
@@ -137,10 +167,10 @@ public class StudentExamDAO {
                 + "JOIN Exams e ON se.ExamID = e.ExamID "
                 + "JOIN Courses c ON e.CourseID = c.CourseID "
                 + "WHERE se.StudentID = ?";
-        try (Connection conn = DBUtil.getConnection(); PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, studentID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Exam exam = new Exam();
                     exam.setExamID(rs.getInt("ExamID"));
@@ -155,4 +185,22 @@ public class StudentExamDAO {
         }
         return examList;
     }
+
+    public boolean isStudentEnrolledInExam(int studentID, int examID) {
+        try ( Connection conn = DBUtil.getConnection()) {
+            String query = "SELECT COUNT(*) FROM StudentExams WHERE StudentID = ? AND ExamID = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, examID);
+
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next() && rs.getInt(1) > 0) {
+                return true; // Öğrenci zaten kayıtlı
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

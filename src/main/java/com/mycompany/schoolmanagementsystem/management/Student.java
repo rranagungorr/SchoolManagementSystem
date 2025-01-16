@@ -1,43 +1,6 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package com.mycompany.schoolmanagementsystem.management;
 
-/**
- *
- * @author PC
- */
 public class Student {
-    private int studentID;
-    private String name;
-    private String surname;
-    private int credits;
-    private int classLevel;
-    private String email;
-    private Integer departmentID; // can be null
-    private String username;
-    private String password;
-    private String gender;
-
-    public Student() {
-    }
-
-    public Student(int studentID, String name, String surname, 
-                   int credits, int classLevel, String email, 
-                   Integer departmentID, String username, 
-                   String password, String gender) {
-        this.studentID = studentID;
-        this.name = name;
-        this.surname = surname;
-        this.credits = credits;
-        this.classLevel = classLevel;
-        this.email = email;
-        this.departmentID = departmentID;
-        this.username = username;
-        this.password = password;
-        this.gender = gender;
-    }
 
     public int getStudentID() {
         return studentID;
@@ -87,12 +50,20 @@ public class Student {
         this.email = email;
     }
 
-    public Integer getDepartmentID() {
+    public int getDepartmentID() {
         return departmentID;
     }
 
-    public void setDepartmentID(Integer departmentID) {
+    public void setDepartmentID(int departmentID) {
         this.departmentID = departmentID;
+    }
+
+    public int getSemesterID() {
+        return semesterID;
+    }
+
+    public void setSemesterID(int semesterID) {
+        this.semesterID = semesterID;
     }
 
     public String getUsername() {
@@ -118,9 +89,51 @@ public class Student {
     public void setGender(String gender) {
         this.gender = gender;
     }
-    
-     @Override
+
+    public Double getGeneralAverage() {
+        return generalAverage;
+    }
+
+    public void setGeneralAverage(Double generalAverage) {
+        this.generalAverage = generalAverage;
+    }
+
+    private int studentID;
+    private String name;
+    private String surname;
+    private int credits;
+    private int classLevel;
+    private String email;
+    private int departmentID; // NULL olabilir
+    private int semesterID;   // Yeni ekleme
+    private String username;
+    private String password;
+    private String gender;
+    private Double generalAverage; // Yeni ekleme
+
+    // Constructor'lar
+    public Student() {
+    }
+
+    public Student(int studentID, String name, String surname, int credits,
+            int classLevel, String email, int departmentID, int semesterID,
+            String username, String password, String gender, Double generalAverage) {
+        this.studentID = studentID;
+        this.name = name;
+        this.surname = surname;
+        this.credits = credits;
+        this.classLevel = classLevel;
+        this.email = email;
+        this.departmentID = departmentID;
+        this.semesterID = semesterID;
+        this.username = username;
+        this.password = password;
+        this.gender = gender;
+        this.generalAverage = generalAverage;
+    }
+
+    @Override
     public String toString() {
-        return this.name + " " + this.surname; // Name ve Surname özelliklerini kullanın
+        return name + " " + surname; // Eğitmenin adı ve soyadı
     }
 }
