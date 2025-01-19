@@ -9,6 +9,7 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.InstructorDepartmentDAO;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Department;
+import com.mycompany.schoolmanagementsystem.service.AdminService;
 import javax.swing.JOptionPane;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.table.DefaultTableModel;
@@ -28,6 +29,7 @@ public class AdminManageInstructor extends javax.swing.JPanel implements IPage {
     private InstructorDepartmentDAO instructorDepartmentDAO;
     private DefaultTableModel tableModel;
     private DefaultTableModel instructorDepartmentTableModel;
+      private AdminService adminService;
 
     public AdminManageInstructor() {
         initComponents();
@@ -35,6 +37,7 @@ public class AdminManageInstructor extends javax.swing.JPanel implements IPage {
         this.departmentDAO = new DepartmentDAO();
         this.instructorDAO = new InstructorDAO();
         this.instructorDepartmentDAO = new InstructorDepartmentDAO();
+        this.adminService = new AdminService();
 
         JList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         jScrollPane2.setViewportView(JList);
@@ -482,30 +485,28 @@ public class AdminManageInstructor extends javax.swing.JPanel implements IPage {
             return;
         }
 
-        // Get the selected instructor ID
+// Get the selected instructor ID
         int instructorID = (int) tableModel.getValueAt(selectedRow, 0);
 
-        // Confirm deletion
+// Confirm deletion
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete Instructor ID " + instructorID + "? This will also remove all department assignments.",
+                "Are you sure you want to delete Instructor ID " + instructorID + "? This will nullify references in Courses, delete Exams and CourseInstructors records.",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
         if (confirm == JOptionPane.YES_OPTION) {
-            // Delete all department assignments for the instructor
-            boolean departmentsDeleted = instructorDepartmentDAO.deleteByInstructorID(instructorID);
-
-            // Proceed to delete the instructor
-            boolean success = instructorDAO.delete(instructorID);
-            if (success) {
-                if (departmentsDeleted) {
-                    JOptionPane.showMessageDialog(this, "Instructor and all department assignments deleted successfully.");
+            try {
+                boolean success = adminService.deleteInstructorWithDependencies(instructorID);
+                if (success) {
+                    JOptionPane.showMessageDialog(this, "Instructor deleted successfully. References updated.");
+                    loadInstructors(); // Tabloyu güncelle
                 } else {
-                    JOptionPane.showMessageDialog(this, "Instructor deleted successfully. No department assignments were found.");
+                    JOptionPane.showMessageDialog(this, "Failed to delete instructor. Please try again.");
                 }
-                loadInstructors(); // Tabloyu güncelle
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to delete instructor.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "An error occurred: " + e.getMessage());
+                e.printStackTrace();
             }
+
         }
 
     }//GEN-LAST:event_deleteInstructorActionPerformed

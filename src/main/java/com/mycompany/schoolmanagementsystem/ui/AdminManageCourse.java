@@ -310,7 +310,7 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(37, 37, 37)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 543, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(124, Short.MAX_VALUE))
+                .addContainerGap(68, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -321,11 +321,12 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
                     .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap(86, Short.MAX_VALUE))
+                .addContainerGap(54, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void deleteCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCourseActionPerformed
+
         int selectedRow = coursesTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a course from the table.");
@@ -333,17 +334,23 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
         }
 
         int courseID = (int) tableModel.getValueAt(selectedRow, 0);
-        int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete course ID " + courseID + "?",
+        int confirm = JOptionPane.showConfirmDialog(null,
+                "Deleting this course will also delete all related records (instructors, schedules, students, exams, grades). Do you want to proceed?",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
+
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean success = adminService.deleteCourse(courseID);
-            if (success) {
-                JOptionPane.showMessageDialog(this, "Course deleted successfully!");
-                loadCourses();
-            } else {
-                JOptionPane.showMessageDialog(this, "Failed to delete course.");
+            try {
+                boolean success = adminService.deleteCourseWithDependencies(courseID);
+                if (success) {
+                    JOptionPane.showMessageDialog(null, "Course and related records deleted successfully.");
+                    loadCourses(); // Tabloyu güncelle
+                } else {
+                    JOptionPane.showMessageDialog(null, "Failed to delete course. Please try again.");
+                }
+            } catch (Exception e) { // Genel bir istisna yakalayıcı kullanabilirsiniz
+                JOptionPane.showMessageDialog(null, "An unexpected error occurred: " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }//GEN-LAST:event_deleteCourseActionPerformed
@@ -366,6 +373,7 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
     }//GEN-LAST:event_instructorComboBoxİtemStateChanged
 
     private void addCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addCourseActionPerformed
+
         Department selectedDepartment = (Department) departmentComboBox.getSelectedItem();
         Instructor selectedInstructor = (Instructor) instructorComboBox.getSelectedItem();
         Classroom selectedClassroom = (Classroom) classroomComboBox.getSelectedItem();
@@ -404,15 +412,24 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
         String startTime = "-";
         String endTime = "-";
 
+        // Kurs ekle
         int newCourseID = adminService.createCourse(courseName, courseCode, credits, selectedDepartment.getDepartmentID(),
-                selectedInstructor.getInstructorID(), selectedClassroom.getClassroomID(), hours, semesterID, startTime, endTime, weekDay,classLevel);
+                selectedInstructor.getInstructorID(), selectedClassroom.getClassroomID(), hours, semesterID, startTime, endTime, weekDay, classLevel);
 
         if (newCourseID > 0) {
-            JOptionPane.showMessageDialog(this, "Course added successfully.");
+            // courseInstructor tablosuna ilişki ekle
+            boolean instructorMappingAdded = adminService.addInstructorToCourse(newCourseID, selectedInstructor.getInstructorID());
+            if (instructorMappingAdded) {
+                JOptionPane.showMessageDialog(this, "Course added successfully.");
+            } else {
+                JOptionPane.showMessageDialog(this, "Course added, but failed to map instructor.");
+            }
             loadCourses();
         } else {
             JOptionPane.showMessageDialog(this, "Failed to add course.");
         }
+
+
     }//GEN-LAST:event_addCourseActionPerformed
 
     private String generateRandomCourseCode() {
@@ -454,6 +471,6 @@ public class AdminManageCourse extends javax.swing.JPanel implements IPage {
         loadClassrooms();
         loadCourses();
         loadSemesters();
-        
+
     }
 }

@@ -13,22 +13,23 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+
 /**
  *
  * @author PC
  */
 public class ExamResultDAO {
+
     // CREATE
     public int create(ExamResult examResult) {
         String sql = "INSERT INTO ExamResults (StudentExamID, Score) VALUES (?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             pstmt.setInt(1, examResult.getStudentExamID());
             pstmt.setDouble(2, examResult.getScore());
 
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                try ( ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         return rs.getInt(1); // new ExamResultID
                     }
@@ -43,10 +44,9 @@ public class ExamResultDAO {
     // READ by ID
     public ExamResult getByID(int examResultID) {
         String sql = "SELECT * FROM ExamResults WHERE ExamResultID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, examResultID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     ExamResult er = new ExamResult();
                     er.setExamResultID(rs.getInt("ExamResultID"));
@@ -65,9 +65,7 @@ public class ExamResultDAO {
     public List<ExamResult> getAll() {
         List<ExamResult> list = new ArrayList<>();
         String sql = "SELECT * FROM ExamResults";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
             while (rs.next()) {
                 ExamResult er = new ExamResult();
                 er.setExamResultID(rs.getInt("ExamResultID"));
@@ -84,8 +82,7 @@ public class ExamResultDAO {
     // UPDATE
     public boolean update(ExamResult examResult) {
         String sql = "UPDATE ExamResults SET StudentExamID = ?, Score = ? WHERE ExamResultID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, examResult.getStudentExamID());
             pstmt.setDouble(2, examResult.getScore());
             pstmt.setInt(3, examResult.getExamResultID());
@@ -101,8 +98,7 @@ public class ExamResultDAO {
     // DELETE
     public boolean delete(int examResultID) {
         String sql = "DELETE FROM ExamResults WHERE ExamResultID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, examResultID);
             int affectedRows = pstmt.executeUpdate();
             return affectedRows > 0;
@@ -116,13 +112,12 @@ public class ExamResultDAO {
     public List<ExamResult> getResultsByStudent(int studentID) {
         List<ExamResult> list = new ArrayList<>();
         String sql = "SELECT er.ExamResultID, er.StudentExamID, er.Score "
-                   + "FROM ExamResults er "
-                   + "JOIN StudentExams se ON er.StudentExamID = se.StudentExamID "
-                   + "WHERE se.StudentID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                + "FROM ExamResults er "
+                + "JOIN StudentExams se ON er.StudentExamID = se.StudentExamID "
+                + "WHERE se.StudentID = ?";
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, studentID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     ExamResult er = new ExamResult();
                     er.setExamResultID(rs.getInt("ExamResultID"));
@@ -136,4 +131,43 @@ public class ExamResultDAO {
         }
         return list;
     }
+
+    public boolean isScoreAlreadyAssigned(int studentID, int examID) {
+        String query = "SELECT COUNT(*) AS count "
+                + "FROM ExamResults "
+                + "WHERE StudentExamID IN (SELECT StudentExamID FROM StudentExams WHERE StudentID = ? AND ExamID = ?)";
+
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, studentID);
+            ps.setInt(2, examID);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next() && rs.getInt("count") > 0) {
+                return true; // Not atanmışsa true döner.
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false; // Eğer not atanmadıysa false döner.
+    }
+
+    public boolean assignScore(int studentID, int examID, int score) {
+        String query = "INSERT INTO ExamResults (StudentExamID, Score) "
+                + "VALUES ((SELECT StudentExamID FROM StudentExams WHERE StudentID = ? AND ExamID = ?), ?)";
+
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setInt(1, studentID);
+            ps.setInt(2, examID);
+            ps.setInt(3, score);
+
+            int rowsInserted = ps.executeUpdate();
+            return rowsInserted > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
 }

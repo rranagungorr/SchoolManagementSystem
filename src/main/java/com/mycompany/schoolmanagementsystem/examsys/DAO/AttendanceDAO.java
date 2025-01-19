@@ -18,11 +18,11 @@ import java.util.List;
  * @author PC
  */
 public class AttendanceDAO {
+
     // CREATE (mark attendance or add a new attendance record)
     public int create(Attendance attendance) {
         String sql = "INSERT INTO Attendance (StudentID, ScheduleID, Status) VALUES (?, ?, ?)";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setInt(1, attendance.getStudentID());
             pstmt.setInt(2, attendance.getScheduleID());
@@ -31,7 +31,7 @@ public class AttendanceDAO {
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows > 0) {
                 // Retrieve the generated primary key
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                try ( ResultSet rs = pstmt.getGeneratedKeys()) {
                     if (rs.next()) {
                         return rs.getInt(1); // AttendanceID
                     }
@@ -43,15 +43,33 @@ public class AttendanceDAO {
         return 0;  // 0 indicates failure or no ID generated
     }
 
+    public boolean saveAttendance(int studentID, int scheduleID, String status) {
+        String sql = "INSERT INTO Attendance (StudentID, ScheduleID, Status) VALUES (?, ?, ?)";
+
+        try ( Connection connection = DBUtil.getConnection();  PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, studentID);
+            ps.setInt(2, scheduleID);
+            ps.setString(3, status);
+
+            ps.executeUpdate();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
     // READ by ID
     public Attendance getByID(int attendanceID) {
         String sql = "SELECT * FROM Attendance WHERE AttendanceID = ?";
         Attendance record = null;
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, attendanceID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 if (rs.next()) {
                     record = new Attendance();
                     record.setAttendanceID(rs.getInt("AttendanceID"));
@@ -70,9 +88,7 @@ public class AttendanceDAO {
     public List<Attendance> getAll() {
         List<Attendance> list = new ArrayList<>();
         String sql = "SELECT * FROM Attendance";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql);
-             ResultSet rs = pstmt.executeQuery()) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql);  ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
                 Attendance a = new Attendance();
@@ -91,8 +107,7 @@ public class AttendanceDAO {
     // UPDATE
     public boolean update(Attendance attendance) {
         String sql = "UPDATE Attendance SET StudentID = ?, ScheduleID = ?, Status = ? WHERE AttendanceID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, attendance.getStudentID());
             pstmt.setInt(2, attendance.getScheduleID());
@@ -110,8 +125,7 @@ public class AttendanceDAO {
     // DELETE
     public boolean delete(int attendanceID) {
         String sql = "DELETE FROM Attendance WHERE AttendanceID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, attendanceID);
             int affectedRows = pstmt.executeUpdate();
@@ -126,11 +140,10 @@ public class AttendanceDAO {
     public List<Attendance> getAttendanceByStudent(int studentID) {
         List<Attendance> list = new ArrayList<>();
         String sql = "SELECT * FROM Attendance WHERE StudentID = ?";
-        try (Connection conn = DBUtil.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql)) {
 
             pstmt.setInt(1, studentID);
-            try (ResultSet rs = pstmt.executeQuery()) {
+            try ( ResultSet rs = pstmt.executeQuery()) {
                 while (rs.next()) {
                     Attendance a = new Attendance();
                     a.setAttendanceID(rs.getInt("AttendanceID"));
@@ -145,4 +158,50 @@ public class AttendanceDAO {
         }
         return list;
     }
+
+    // Güncellenen Attendance DAO:
+    public boolean checkIfAttendanceExists(int studentID, int scheduleID) {
+        // Veritabanında mevcut kayıt olup olmadığını kontrol eden sorgu
+        String query = "SELECT COUNT(*) FROM Attendance WHERE StudentID = ? AND ScheduleID = ?";
+        try ( PreparedStatement stmt = DBUtil.getConnection().prepareStatement(query)) {
+            stmt.setInt(1, studentID);
+            stmt.setInt(2, scheduleID);
+            try ( ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0; // Eğer kayıt varsa true döner
+                }
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+    
+    public List<Attendance> getAttendanceWithDateByStudentAndCourse(int studentID, int courseID) {
+    List<Attendance> attendanceList = new ArrayList<>();
+    String sql = "SELECT a.Status, cs.ScheduleDate " +
+                 "FROM Attendance a " +
+                 "JOIN CourseSchedules cs ON a.ScheduleID = cs.ScheduleID " +
+                 "WHERE a.StudentID = ? AND cs.CourseID = ?";
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, studentID);
+        stmt.setInt(2, courseID);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            Attendance attendance = new Attendance();
+            attendance.setStatus(rs.getString("Status"));
+            attendance.setScheduleDate(rs.getDate("ScheduleDate").toLocalDate());
+            attendanceList.add(attendance);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return attendanceList;
+}
+
+  
+
+
 }

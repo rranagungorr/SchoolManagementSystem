@@ -6,6 +6,7 @@ package com.mycompany.schoolmanagementsystem.examsys.DAO;
 
 import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.examsys.StudentExam;
+import com.mycompany.schoolmanagementsystem.management.Student;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -202,5 +203,84 @@ public class StudentExamDAO {
         }
         return false;
     }
+
+    
+    public List<Student> getStudentsByCourseID(int courseID) {
+    List<Student> students = new ArrayList<>();
+    String query = "SELECT s.StudentID, s.Name, s.Surname " +
+                   "FROM StudentExams se " +
+                   "JOIN Student s ON se.StudentID = s.StudentID " +
+                   "WHERE se.ExamID IN (SELECT ExamID FROM Exam WHERE CourseID = ?)";
+
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+
+        ps.setInt(1, courseID);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            Student student = new Student();
+            student.setStudentID(rs.getInt("StudentID"));
+            student.setName(rs.getString("Name"));
+            student.setSurname(rs.getString("Surname"));
+            students.add(student);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return students;
+}
+    
+    public int getExamIDByCourseAndStudent(int courseID, int studentID) {
+    String query = "SELECT se.ExamID " +
+                   "FROM StudentExams se " +
+                   "JOIN Exams e ON se.ExamID = e.ExamID " +
+                   "WHERE e.CourseID = ? AND se.StudentID = ?";
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement ps = conn.prepareStatement(query)) {
+
+        ps.setInt(1, courseID);
+        ps.setInt(2, studentID);
+        ResultSet rs = ps.executeQuery();
+
+        if (rs.next()) {
+            return rs.getInt("ExamID");
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return -1; // Eğer sınav bulunamazsa -1 döner.
+}
+    
+    
+public List<Student> getStudentsByExamID(int examID) {
+    List<Student> students = new ArrayList<>();
+    String sql = "SELECT s.StudentID, s.Name, s.Surname " +
+                 "FROM StudentExams se " +
+                 "JOIN Students s ON se.StudentID = s.StudentID " +
+                 "WHERE se.ExamID = ?";
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, examID);
+        System.out.println("Query: " + sql);
+        System.out.println("ExamID: " + examID);
+        
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            System.out.println("Found Student: " + rs.getInt("StudentID"));
+            Student student = new Student();
+            student.setStudentID(rs.getInt("StudentID"));
+            student.setName(rs.getString("Name"));
+            student.setSurname(rs.getString("Surname"));
+            students.add(student);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    System.out.println("Total students found: " + students.size());
+    return students;
+}
+
+
 
 }

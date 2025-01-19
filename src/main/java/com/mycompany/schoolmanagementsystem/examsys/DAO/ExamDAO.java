@@ -226,7 +226,7 @@ public class ExamDAO {
     }
 
     public boolean isExamExists(int courseID, java.util.Date examDate, int classroomID) {
-        String query = "SELECT COUNT(*) FROM exams WHERE courseID = ? AND examDate = ? AND classroomID = ?";
+        String query = "SELECT COUNT(*) FROM Exams WHERE courseID = ? AND examDate = ? AND classroomID = ?";
         try ( Connection connection = DBUtil.getConnection();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
 
             preparedStatement.setInt(1, courseID);
@@ -243,5 +243,26 @@ public class ExamDAO {
         }
         return false; // Hiçbir kayıt yoksa false döndür
     }
+    
+    public List<Exam> getExamsByCourseID(int courseID) {
+    List<Exam> exams = new ArrayList<>();
+    String sql = "SELECT ExamID, ExamName, ExamDate FROM Exams WHERE CourseID = ?";
+    try (Connection conn = DBUtil.getConnection();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, courseID);
+        ResultSet rs = stmt.executeQuery();
+        while (rs.next()) {
+            Exam exam = new Exam();
+            exam.setExamID(rs.getInt("ExamID"));
+            exam.setExamName(rs.getString("ExamName"));
+            exam.setExamDate(rs.getDate("ExamDate"));
+            exams.add(exam);
+        }
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+    return exams;
+}
+
 
 }

@@ -49,5 +49,9 @@ public class CourseSchedule {
     public void setScheduleDate(Date scheduleDate) {
         this.scheduleDate = scheduleDate;
     }
+    
+    public void setScheduleDateFromString(String date) {
+    this.scheduleDate = java.sql.Date.valueOf(date);
+}
 
    }

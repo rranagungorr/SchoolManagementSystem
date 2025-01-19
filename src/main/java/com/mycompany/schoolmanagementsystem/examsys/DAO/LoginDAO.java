@@ -11,11 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class LoginDAO {
-
-    /**
-     * Attempts to find an Admin by username and password.
-     * Returns the Admin object if found; otherwise returns null.
-     */
+   
     public Admin loginAdmin(String username, String password) {
         String sql = "SELECT * FROM Admins WHERE Username = ? AND Password = ?";
         try (Connection conn = DBUtil.getConnection();
@@ -63,7 +59,6 @@ public class LoginDAO {
                     instructor.setSurname(rs.getString("Surname"));
                     instructor.setEmail(rs.getString("Email"));
                     instructor.setGender(rs.getString("Gender"));
-                    instructor.setDepartmentID((Integer) rs.getObject("DepartmentID"));
                     instructor.setUsername(rs.getString("Username"));
                     instructor.setPassword(rs.getString("Password"));
                     return instructor;
@@ -96,10 +91,12 @@ public class LoginDAO {
                     student.setCredits(rs.getInt("Credits"));
                     student.setClassLevel(rs.getInt("ClassLevel"));
                     student.setEmail(rs.getString("Email"));
-                    student.setDepartmentID((Integer) rs.getObject("DepartmentID"));
+                    student.setGender(rs.getString("Gender"));
+                    student.setSemesterID(rs.getInt("SemesterID"));
+                    student.setGeneralAverage(rs.getDouble("GeneralAverage"));
+                    student.setDepartmentID(rs.getInt("DepartmentID"));
                     student.setUsername(rs.getString("Username"));
                     student.setPassword(rs.getString("Password"));
-                    student.setGender(rs.getString("Gender"));
                     return student;
                 }
             }

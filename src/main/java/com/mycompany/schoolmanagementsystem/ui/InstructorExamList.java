@@ -27,6 +27,7 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
 
     private DefaultTableModel tableModel;
     private ExamDAO examDAO; // ExamDAO kullanarak tüm sınavları alacağız
+    int instructorID;
 
     /**
      * Creates new form InstructorExamList
@@ -62,7 +63,6 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
 
         examTable.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -94,31 +94,23 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
             }
         });
 
-        jButton3.setText("Back");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(97, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 706, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(120, 120, 120))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 144, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(604, 604, 604)))
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(165, 165, 165))
+                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 706, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 56, Short.MAX_VALUE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(109, 109, 109))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -127,26 +119,23 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(33, 33, 33)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 385, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(72, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
                         .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 34, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton3)
-                        .addGap(109, 109, 109))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         // Öğretmen bilgilerini almak için MainFrame üzerinden hesap objesini alıyoruz
-        if (MainFrame.instance.getAccount() instanceof Instructor instructor) {
+      
             // Öğretmenin derslerini almak için CourseDAO kullanıyoruz
             CourseDAO courseDAO = new CourseDAO();
-            List<Course> instructorCourses = courseDAO.getCoursesByInstructor(instructor.getInstructorID());
+            List<Course> instructorCourses = courseDAO.getCoursesByInstructor(instructorID);
 
             // Öğretmenin verdiği derslerin sınavlarını almak için ExamDAO kullanıyoruz
             ExamDAO examDAO = new ExamDAO();
@@ -171,7 +160,7 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
                     exam.getCourseID() // Burada dersin ID'sini alıyoruz, courseName'i de alabilirsiniz
                 };
                 tableModel.addRow(rowData);
-            }
+            
         }
     }//GEN-LAST:event_jButton1ActionPerformed
 
@@ -179,11 +168,6 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
         // TODO add your handling code here:
         loadAllExams();
     }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-        MainFrame.instance.setPage(MainFrame.instance.getInstructorMainPanel());
-    }//GEN-LAST:event_jButton3ActionPerformed
 
 
     private void loadAllExams() {
@@ -220,15 +204,17 @@ public class InstructorExamList extends javax.swing.JPanel implements IPage {
     private javax.swing.JTable examTable;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     // End of variables declaration//GEN-END:variables
 
-    @Override
+     @Override
     public void onPageSetted() {
-        // Tüm sınavları yükle
-        loadAllExams();
+        Object account = MainFrame.instance.getAccount();
+        if (account instanceof Instructor instructor) {
+            this.instructorID = instructor.getInstructorID();
+            loadAllExams();
+        }
     }
 
 }

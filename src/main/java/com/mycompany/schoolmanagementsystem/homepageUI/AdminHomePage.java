@@ -81,8 +81,8 @@ public class AdminHomePage extends javax.swing.JPanel implements IPage {
                 }
                 if (menuIndex == 3) {
 
-                    mainForm.showForm(MainFrame.instance.getAdminManageExam());
-                    MainFrame.instance.setPagePro(MainFrame.instance.getAdminManageExam());
+                    mainForm.showForm(MainFrame.instance.getAdminManageCourseSchedule());
+                    MainFrame.instance.setPagePro(MainFrame.instance.getAdminManageCourseSchedule());
 
                 }
                 if (menuIndex == 4) {
@@ -137,7 +137,8 @@ public class AdminHomePage extends javax.swing.JPanel implements IPage {
             this.username = admin.getUsername();
             this.email = admin.getEmail();
             this.gender = admin.getGender();
-
+            System.out.println(username);
+             System.out.println(username);
             topBarInfo();
         }
     }

@@ -50,30 +50,30 @@ public class Menu extends javax.swing.JPanel {
     }
 
     public void initMenuItemAdmin() {
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Manage Student"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\5.png"), "Manage Student"));
         addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Manage Instructor"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Manage Courses"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Manage Course Schedule"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Manage Exams"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Exam Record"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Student"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\7.png"), "Manage Courses"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\9.png"), "Manage Course Schedule"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\10.png"), "Manage Exams"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\14.png"), "Exam Record"));
+       
         
 
     }
     
      public void initMenuItemStudent() {
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Attandance List"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Course List"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Exam List"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Score List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\1.png"), "Attandance List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\7.png"), "Course List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\8.png"), "Exam List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\10.png"), "Course Registration"));
       
     }
      
      public void initMenuItemInstructor() {
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Course List"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Exam List"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Attandence Record"));
-        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\6.png"), "Score Record"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\12.png"), "Attandence Record"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\3.png"), "Exam List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\7.png"), "Course List"));
+        addMenu(new ModelMenu(new ImageIcon("C:\\Users\\Merve\\OneDrive\\Desktop\\icons\\2.png"), "Score Record"));
         
 
     }

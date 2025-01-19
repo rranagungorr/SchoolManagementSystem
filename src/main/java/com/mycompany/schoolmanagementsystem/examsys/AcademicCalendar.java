@@ -8,6 +8,8 @@ import com.mycompany.schoolmanagementsystem.ui.MainFrame;
 import java.awt.Color;
 import java.awt.Font;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -17,6 +19,88 @@ import javax.swing.JPanel;
  * @author Merve
  */
 public class AcademicCalendar {
+
+    public List<Week> getTeachingWeeks() {
+        return teachingWeeks;
+    }
+
+    public void setTeachingWeeks(List<Week> teachingWeeks) {
+        this.teachingWeeks = teachingWeeks;
+    }
+
+    private LocalDate registrationStudentStartDate;
+    private LocalDate registrationStudentEndDate;
+    private LocalDate registrationCourseStartDate;
+    private LocalDate registrationCourseEndDate;
+    private LocalDate midtermStartDate;
+    private LocalDate midtermEndDate;
+    private LocalDate finalStartDate;
+    private LocalDate finalEndDate;
+    private List<Week> teachingWeeks; // Her hafta için başlangıç ve bitiş tarihleriyle birlikte
+
+    public AcademicCalendar() {}
+
+    private String studentRegistrationMessage = "Şu anda öğrenci kayıt dönemi dışında bir tarihtesiniz!";
+    private String courseRegistrationMessage = "Şu anda ders kayıt dönemi dışında bir tarihtesiniz!";
+    private String midtermPeriodMessage = "Şu anda ara sınav dönemi dışında bir tarihtesiniz!";
+    private String finalPeriodMessage = "Şu anda final dönemi dışında bir tarihtesiniz!";
+
+    public AcademicCalendar(LocalDate registrationStudentStartDate, LocalDate registrationStudentEndDate,
+            LocalDate registrationCourseStartDate, LocalDate registrationCourseEndDate,
+            LocalDate midtermStartDate, LocalDate midtermEndDate,
+            LocalDate finalStartDate, LocalDate finalEndDate) {
+        this.registrationStudentStartDate = registrationStudentStartDate;
+        this.registrationStudentEndDate = registrationStudentEndDate;
+        this.registrationCourseStartDate = registrationCourseStartDate;
+        this.registrationCourseEndDate = registrationCourseEndDate;
+        this.midtermStartDate = midtermStartDate;
+        this.midtermEndDate = midtermEndDate;
+        this.finalStartDate = finalStartDate;
+        this.finalEndDate = finalEndDate;
+        this.teachingWeeks = new ArrayList<>();
+
+    }
+
+    public void errorMessage(String errorMessage, JPanel panel) {
+
+        if (errorMessage != null) {
+            JLabel messageLabel = new JLabel(errorMessage);
+            messageLabel.setFont(new Font("Arial", Font.BOLD, 16));
+            messageLabel.setForeground(Color.RED);
+
+            JOptionPane.showMessageDialog(null,
+                    messageLabel,
+                    "Hata",
+                    JOptionPane.ERROR_MESSAGE);
+
+            MainFrame.disablePanelComponents(panel);
+        } else {
+            System.out.println("Error message is null");
+        }
+    }
+
+    // Tarihlerin kontrolü
+    public void isWithinStudentRegistrationPeriod(LocalDate date, JPanel panel) {
+        String errorMessage = "Şu anda öğrenci kayıt dönemi dışında bir tarihtesiniz!";
+        if (!date.isBefore(registrationStudentStartDate) && !date.isAfter(registrationStudentEndDate)) {
+            System.out.println("Öğrenci kayıt dönemindesiniz. İşlem yapabilirsiniz.");
+        } else {
+            System.out.println("Öğrenci kayıt dönemi dışında işlem yapılamaz.");
+            errorMessage(errorMessage, panel);
+        }
+    }
+
+    public boolean isWithinCourseRegistrationPeriod(LocalDate date) {
+        return !date.isBefore(registrationCourseStartDate) && !date.isAfter(registrationCourseEndDate);
+    }
+
+    public boolean isWithinMidtermPeriod(LocalDate date) {
+        return !date.isBefore(midtermStartDate) && !date.isAfter(midtermEndDate);
+    }
+
+    public boolean isWithinFinalPeriod(LocalDate date) {
+        return !date.isBefore(finalStartDate) && !date.isAfter(finalEndDate);
+    }
 
     public LocalDate getRegistrationStudentStartDate() {
         return registrationStudentStartDate;
@@ -80,75 +164,6 @@ public class AcademicCalendar {
 
     public void setFinalEndDate(LocalDate finalEndDate) {
         this.finalEndDate = finalEndDate;
-    }
-
-    private LocalDate registrationStudentStartDate;
-    private LocalDate registrationStudentEndDate;
-    private LocalDate registrationCourseStartDate;
-    private LocalDate registrationCourseEndDate;
-    private LocalDate midtermStartDate;
-    private LocalDate midtermEndDate;
-    private LocalDate finalStartDate;
-    private LocalDate finalEndDate;
-
-    private String studentRegistrationMessage = "Şu anda öğrenci kayıt dönemi dışında bir tarihtesiniz!";
-    private String courseRegistrationMessage = "Şu anda ders kayıt dönemi dışında bir tarihtesiniz!";
-    private String midtermPeriodMessage = "Şu anda ara sınav dönemi dışında bir tarihtesiniz!";
-    private String finalPeriodMessage = "Şu anda final dönemi dışında bir tarihtesiniz!";
-
-    public AcademicCalendar(LocalDate registrationStudentStartDate, LocalDate registrationStudentEndDate,
-            LocalDate registrationCourseStartDate, LocalDate registrationCourseEndDate,
-            LocalDate midtermStartDate, LocalDate midtermEndDate,
-            LocalDate finalStartDate, LocalDate finalEndDate) {
-        this.registrationStudentStartDate = registrationStudentStartDate;
-        this.registrationStudentEndDate = registrationStudentEndDate;
-        this.registrationCourseStartDate = registrationCourseStartDate;
-        this.registrationCourseEndDate = registrationCourseEndDate;
-        this.midtermStartDate = midtermStartDate;
-        this.midtermEndDate = midtermEndDate;
-        this.finalStartDate = finalStartDate;
-        this.finalEndDate = finalEndDate;
-    }
-
-    public void errorMessage(String errorMessage, JPanel panel) {
-
-        if (errorMessage != null) {
-            JLabel messageLabel = new JLabel(errorMessage);
-            messageLabel.setFont(new Font("Arial", Font.BOLD, 16));
-            messageLabel.setForeground(Color.RED);
-
-            JOptionPane.showMessageDialog(null,
-                    messageLabel,
-                    "Hata",
-                    JOptionPane.ERROR_MESSAGE);
-
-            MainFrame.disablePanelComponents(panel);
-        } else {
-            System.out.println("Error message is null");
-        }
-    }
-
-    // Tarihlerin kontrolü
-    public void isWithinStudentRegistrationPeriod(LocalDate date, JPanel panel) {
-        String errorMessage = "Şu anda öğrenci kayıt dönemi dışında bir tarihtesiniz!";
-        if (!date.isBefore(registrationStudentStartDate) && !date.isAfter(registrationStudentEndDate)) {
-            System.out.println("Öğrenci kayıt dönemindesiniz. İşlem yapabilirsiniz.");
-        } else {
-            System.out.println("Öğrenci kayıt dönemi dışında işlem yapılamaz.");
-            errorMessage(errorMessage, panel);
-        }
-    }
-
-    public boolean isWithinCourseRegistrationPeriod(LocalDate date) {
-        return !date.isBefore(registrationCourseStartDate) && !date.isAfter(registrationCourseEndDate);
-    }
-
-    public boolean isWithinMidtermPeriod(LocalDate date) {
-        return !date.isBefore(midtermStartDate) && !date.isAfter(midtermEndDate);
-    }
-
-    public boolean isWithinFinalPeriod(LocalDate date) {
-        return !date.isBefore(finalStartDate) && !date.isAfter(finalEndDate);
     }
 
 }

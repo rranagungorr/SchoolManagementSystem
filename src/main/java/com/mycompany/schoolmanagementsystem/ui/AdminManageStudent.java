@@ -337,8 +337,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
         Department d = departmentDAO.getByID(deptID);
         return d != null ? d.getDepartmentName() : "Unknown";
     }
-    
-   
+
 
     private void addStudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addStudentActionPerformed
 
@@ -385,7 +384,7 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
             username = baseUsername + "_" + counter;
             counter++;
         }
-        
+
         // Şifre kontrolü
         if (studentDAO.passwordExists(password)) {
             JOptionPane.showMessageDialog(this, "This password is already in use. Please choose a different one.");
@@ -422,29 +421,34 @@ public class AdminManageStudent extends javax.swing.JPanel implements IPage {
     }//GEN-LAST:event_addStudentActionPerformed
 
     private void deleteCourseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_deleteCourseActionPerformed
-        // TODO add your handling code here:
+        // Tablodan seçilen satırı kontrol et
         int selectedRow = studentsTable.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a student from the table.");
             return;
         }
 
-        // Get the student ID from the table's first column
+        // Öğrenci ID'sini al (tablodaki ilk sütundan)
         int studentID = (int) tableModel.getValueAt(selectedRow, 0);
 
+        // İlgili tüm kayıtları silmeden önce kullanıcıyı bilgilendir ve onay al
         int confirm = JOptionPane.showConfirmDialog(this,
-                "Are you sure you want to delete student ID " + studentID + "?",
+                "Deleting this student will also remove associated records in Attendance, StudentCourses, StudentExams, and Grades tables.\n"
+                + "Are you sure you want to delete student ID " + studentID + "?",
                 "Confirm Deletion",
                 JOptionPane.YES_NO_OPTION);
+
         if (confirm == JOptionPane.YES_OPTION) {
-            boolean success = adminService.deleteStudent(studentID);
+            // Öğrenci ve ilişkili kayıtları sil
+            boolean success = adminService.deleteStudentWithDependencies(studentID);
             if (success) {
-                JOptionPane.showMessageDialog(this, "Student deleted successfully!");
-                loadStudents();
+                JOptionPane.showMessageDialog(this, "Student and associated records deleted successfully!");
+                loadStudents(); // Tabloyu yeniden yükle
             } else {
-                JOptionPane.showMessageDialog(this, "Failed to delete student.");
+                JOptionPane.showMessageDialog(this, "Failed to delete student and associated records.");
             }
         }
+
     }//GEN-LAST:event_deleteCourseActionPerformed
 
 

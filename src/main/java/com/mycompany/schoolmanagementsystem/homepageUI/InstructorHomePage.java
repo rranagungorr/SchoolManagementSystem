@@ -7,6 +7,10 @@ package com.mycompany.schoolmanagementsystem.homepageUI;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import com.mycompany.schoolmanagementsystem.ui.IPage;
+import com.mycompany.schoolmanagementsystem.ui.InstructorAttendanceRecord;
+import com.mycompany.schoolmanagementsystem.ui.InstructorCourseList;
+import com.mycompany.schoolmanagementsystem.ui.InstructorExamList;
+import com.mycompany.schoolmanagementsystem.ui.InstructorScoreAdding;
 import com.mycompany.schoolmanagementsystem.ui.MainFrame;
 import javax.swing.ImageIcon;
 import net.miginfocom.swing.MigLayout;
@@ -49,23 +53,25 @@ public class InstructorHomePage extends javax.swing.JPanel implements IPage {
             public void menuSelected(int menuIndex, int subMenuIndex) {
                 System.out.println("Menu Index : " + menuIndex + " SubMenu Index " + subMenuIndex);
                 if (menuIndex == 0) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getInstructorCourseList());
-                    mainForm.showForm(MainFrame.instance.getInstructorCourseList());
-
+                    InstructorAttendanceRecord d = new InstructorAttendanceRecord();
+                    MainFrame.instance.setPagePro(d);
+                    mainForm.showForm(d);
                 }
                 if (menuIndex == 1) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getInstructorExamList());
-                    mainForm.showForm(MainFrame.instance.getInstructorExamList());
+                    InstructorExamList c = new InstructorExamList();
+                    MainFrame.instance.setPagePro(c);
+                    mainForm.showForm(c);
 
                 }
                 if (menuIndex == 2) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getInstructorAttendanceRecord());
-                    mainForm.showForm(MainFrame.instance.getInstructorAttendanceRecord());
-
+                    InstructorCourseList b = new InstructorCourseList();
+                    MainFrame.instance.setPagePro(b);
+                    mainForm.showForm(b);
                 }
                 if (menuIndex == 3) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getInstructorAttendanceRecord());  // değişecek  score record
-                    mainForm.showForm(MainFrame.instance.getInstructorAttendanceRecord());
+                    InstructorScoreAdding a = new InstructorScoreAdding();
+                    MainFrame.instance.setPagePro(a); 
+                    mainForm.showForm(a);
                 }
             }
 
@@ -74,7 +80,7 @@ public class InstructorHomePage extends javax.swing.JPanel implements IPage {
         menu.initMenuItemInstructor();
 
         this.add(menu, "w 281!, spany 2");    // Span Y 2cell
-         this.add(header, "h 80!, wrap");
+        this.add(header, "h 80!, wrap");
         this.add(mainForm, "w 100%, h 100%");
 
     }
@@ -105,7 +111,7 @@ public class InstructorHomePage extends javax.swing.JPanel implements IPage {
             System.out.println("Account is  Admin!");
             this.username = instructor.getUsername();
             this.gender = instructor.getGender();
-
+            System.out.println(username);
             topBarInfo();
         }
     }

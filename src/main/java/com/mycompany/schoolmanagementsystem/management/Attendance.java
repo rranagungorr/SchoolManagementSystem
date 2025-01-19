@@ -4,15 +4,27 @@
  */
 package com.mycompany.schoolmanagementsystem.management;
 
+import java.time.LocalDate;
+
 /**
  *
  * @author PC
  */
 public class Attendance {
+
     private int attendanceID;
     private int studentID;  // FK to Student
     private int scheduleID; // FK to CourseSchedule
     private String status;
+    private LocalDate scheduleDate;
+
+    public LocalDate getScheduleDate() {
+        return scheduleDate;
+    }
+
+    public void setScheduleDate(LocalDate scheduleDate) {
+        this.scheduleDate = scheduleDate;
+    }
 
     public Attendance() {
     }

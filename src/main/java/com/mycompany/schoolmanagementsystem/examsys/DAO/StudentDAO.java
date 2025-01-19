@@ -18,47 +18,43 @@ import java.util.List;
 public class StudentDAO {
 
     // CREATE
-public int create(Student student) {
-    String sql = "INSERT INTO Students (Name, Surname, Credits, ClassLevel, Email, DepartmentID, Username, Password, Gender, SemesterID, GeneralAverage) "
-            + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    public int create(Student student) {
+        String sql = "INSERT INTO Students (Name, Surname, Credits, ClassLevel, Email, DepartmentID, Username, Password, Gender, SemesterID, GeneralAverage) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-    try (Connection conn = DBUtil.getConnection();
-         PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try ( Connection conn = DBUtil.getConnection();  PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-        pstmt.setString(1, student.getName());
-        pstmt.setString(2, student.getSurname());
-        pstmt.setInt(3, student.getCredits() != 0 ? student.getCredits() : 0); // Varsayılan 0
-        pstmt.setInt(4, student.getClassLevel());
-        pstmt.setString(5, student.getEmail());
-        
-       
+            pstmt.setString(1, student.getName());
+            pstmt.setString(2, student.getSurname());
+            pstmt.setInt(3, student.getCredits() != 0 ? student.getCredits() : 0); // Varsayılan 0
+            pstmt.setInt(4, student.getClassLevel());
+            pstmt.setString(5, student.getEmail());
+
             pstmt.setInt(6, student.getDepartmentID());
-      
-        
-        pstmt.setString(7, student.getUsername());
-        pstmt.setString(8, student.getPassword());
-        pstmt.setString(9, student.getGender());
-        pstmt.setInt(10, student.getSemesterID());
-        pstmt.setDouble(11, student.getGeneralAverage() != null ? student.getGeneralAverage() : 0.0); // Varsayılan 0.0
 
-        int affectedRows = pstmt.executeUpdate();
-        if (affectedRows > 0) {
-            try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getInt(1); // Yeni StudentID
+            pstmt.setString(7, student.getUsername());
+            pstmt.setString(8, student.getPassword());
+            pstmt.setString(9, student.getGender());
+            pstmt.setInt(10, student.getSemesterID());
+            pstmt.setDouble(11, student.getGeneralAverage() != null ? student.getGeneralAverage() : 0.0); // Varsayılan 0.0
+
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows > 0) {
+                try ( ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        return rs.getInt(1); // Yeni StudentID
+                    }
                 }
             }
+        } catch (SQLIntegrityConstraintViolationException e) {
+            // UNIQUE Constraint hatası için kullanıcı dostu mesaj
+            System.err.println("UNIQUE constraint violated: " + e.getMessage());
+        } catch (SQLException e) {
+            // Genel veritabanı hataları için
+            e.printStackTrace();
         }
-    } catch (SQLIntegrityConstraintViolationException e) {
-        // UNIQUE Constraint hatası için kullanıcı dostu mesaj
-        System.err.println("UNIQUE constraint violated: " + e.getMessage());
-    } catch (SQLException e) {
-        // Genel veritabanı hataları için
-        e.printStackTrace();
+        return 0; // Hata durumunda 0 döndür
     }
-    return 0; // Hata durumunda 0 döndür
-}
-
 
     // READ by ID
     public Student getByID(int studentID) {
@@ -202,31 +198,58 @@ public int create(Student student) {
         }
         return false;
     }
-    
+
     public List<Student> getStudentsByDepartmentClassLevelAndSemester(int departmentID, String classLevel, int semesterID) {
-    List<Student> students = new ArrayList<>();
-    try (Connection conn = DBUtil.getConnection()) {
-        String query = "SELECT * FROM Students " +
-                       "WHERE DepartmentID = ? AND ClassLevel = ? AND SemesterID = ?";
-        PreparedStatement stmt = conn.prepareStatement(query);
-        stmt.setInt(1, departmentID);
-        stmt.setString(2, classLevel);
-        stmt.setInt(3, semesterID);
+        List<Student> students = new ArrayList<>();
+        try ( Connection conn = DBUtil.getConnection()) {
+            String query = "SELECT * FROM Students "
+                    + "WHERE DepartmentID = ? AND ClassLevel = ? AND SemesterID = ?";
+            PreparedStatement stmt = conn.prepareStatement(query);
+            stmt.setInt(1, departmentID);
+            stmt.setString(2, classLevel);
+            stmt.setInt(3, semesterID);
 
-        ResultSet rs = stmt.executeQuery();
-        while (rs.next()) {
-            Student student = new Student();
-            student.setStudentID(rs.getInt("StudentID"));
-            student.setName(rs.getString("Name"));
-            student.setSurname(rs.getString("Surname"));
-            student.setDepartmentID(rs.getInt("DepartmentID"));
-            students.add(student);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentID(rs.getInt("StudentID"));
+                student.setName(rs.getString("Name"));
+                student.setSurname(rs.getString("Surname"));
+                student.setDepartmentID(rs.getInt("DepartmentID"));
+                students.add(student);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-    } catch (SQLException e) {
-        e.printStackTrace();
+        return students;
     }
-    return students;
-}
 
+    public List<Student> getStudentsByCourseID(int courseID) {
+        List<Student> students = new ArrayList<>();
+        String sql = "SELECT s.StudentID, s.Name, s.Surname FROM Students s "
+                + "INNER JOIN StudentCourses sc ON s.StudentID = sc.StudentID "
+                + "WHERE sc.CourseID = ?";
+
+        try ( Connection connection = DBUtil.getConnection();  PreparedStatement ps = connection.prepareStatement(sql)) {
+
+            ps.setInt(1, courseID);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Student student = new Student();
+                student.setStudentID(rs.getInt("StudentID"));
+                student.setName(rs.getString("Name"));
+                student.setSurname(rs.getString("Surname"));
+                students.add(student);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return students;
+    }
+    
+   
 
 }

@@ -8,6 +8,10 @@ import com.mycompany.schoolmanagementsystem.management.Admin;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import com.mycompany.schoolmanagementsystem.ui.IPage;
 import com.mycompany.schoolmanagementsystem.ui.MainFrame;
+import com.mycompany.schoolmanagementsystem.ui.StudentAttendanceList;
+import com.mycompany.schoolmanagementsystem.ui.StudentCourseAdding;
+import com.mycompany.schoolmanagementsystem.ui.StudentCourseList;
+import com.mycompany.schoolmanagementsystem.ui.StudentExamList;
 import javax.swing.ImageIcon;
 import net.miginfocom.swing.MigLayout;
 
@@ -49,23 +53,27 @@ public class StudentHomePage extends javax.swing.JPanel implements IPage {
             public void menuSelected(int menuIndex, int subMenuIndex) {
                 System.out.println("Menu Index : " + menuIndex + " SubMenu Index " + subMenuIndex);
                 if (menuIndex == 0) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getStudentAttendanceList());
-                    mainForm.showForm(MainFrame.instance.getStudentAttendanceList());
+                    StudentAttendanceList d = new StudentAttendanceList();
+                    MainFrame.instance.setPagePro(d);
+                    mainForm.showForm(d);
 
                 }
                 if (menuIndex == 1) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getStudentCourseList());
-                    mainForm.showForm(MainFrame.instance.getStudentCourseList());
+                    StudentCourseList c = new StudentCourseList();
+                    MainFrame.instance.setPagePro(c);
+                    mainForm.showForm(c);
 
                 }
                 if (menuIndex == 2) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getStudentExamList());
-                    mainForm.showForm(MainFrame.instance.getStudentExamList());
+                    StudentExamList b = new StudentExamList();
+                    MainFrame.instance.setPagePro(b);
+                    mainForm.showForm(b);
 
                 }
                 if (menuIndex == 3) {
-                    MainFrame.instance.setPagePro(MainFrame.instance.getStudentExamList());   // değişecek  score list
-                    mainForm.showForm(MainFrame.instance.getAdminManageExam());
+                    StudentCourseAdding a  = new StudentCourseAdding();
+                    MainFrame.instance.setPagePro(a);   // değişecek  score list
+                    mainForm.showForm(a);
                 }
             }
 
@@ -102,10 +110,10 @@ public class StudentHomePage extends javax.swing.JPanel implements IPage {
     public void onPageSetted() {
         Object account = MainFrame.instance.getAccount();
         if (account instanceof Student student) {
-            System.out.println("Account is  Admin!");
             this.username = student.getUsername();
             this.gender = student.getGender();
             topBarInfo();
+            System.out.println(username);
         }
     }
 }
