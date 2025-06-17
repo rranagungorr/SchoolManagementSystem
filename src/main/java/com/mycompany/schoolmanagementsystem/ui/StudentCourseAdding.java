@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
- */
 package com.mycompany.schoolmanagementsystem.ui;
 
 import com.mycompany.schoolmanagementsystem.examsys.DAO.ClassroomDAO;
@@ -10,26 +6,20 @@ import com.mycompany.schoolmanagementsystem.examsys.DAO.CourseScheduleDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.DepartmentDAO;
 import com.mycompany.schoolmanagementsystem.examsys.DAO.SemesterDAO;
 import com.mycompany.schoolmanagementsystem.management.Course;
-import com.mycompany.schoolmanagementsystem.management.Department;
-import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Semester;
 import com.mycompany.schoolmanagementsystem.management.Student;
-import com.mycompany.schoolmanagementsystem.service.AdminService;
-import java.awt.Color;
+import com.mycompany.schoolmanagementsystem.service.StudentService;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
-/**
- *
- * @author Merve
- */
 public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
 
     private DefaultTableModel tableModel;
-    private AdminService adminService;
+    private StudentService studentService;
     private DepartmentDAO departmentDAO;
     private ClassroomDAO classroomDAO;
     private CourseDAO courseDAO;
@@ -44,7 +34,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
     public StudentCourseAdding() {
         initComponents();
 
-        this.adminService = new AdminService();
+        this.studentService = new StudentService();
         this.departmentDAO = new DepartmentDAO();
         this.classroomDAO = new ClassroomDAO();
         this.semesterDAO = new SemesterDAO();
@@ -117,96 +107,78 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
     }
 
     private void addCourse() {
-        int selectedCourseRow = courseTable.getSelectedRow();
-        if (selectedCourseRow == -1) {
+        int selectedRow = courseTable.getSelectedRow();
+        if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Please select a course.");
             return;
         }
 
-        // Course ID kontrolü
-        Object courseIDObj = courseTable.getValueAt(selectedCourseRow, 0);
-        if (courseIDObj == null || !(courseIDObj instanceof Integer)) {
-            JOptionPane.showMessageDialog(this, "Invalid course selection. Please try again.");
+        int courseID = (int) courseTable.getValueAt(selectedRow, 0);
+        Course selectedCourse = courseDAO.getByID(courseID);
+        if (selectedCourse == null) {
+            JOptionPane.showMessageDialog(this, "Course details not found.");
             return;
         }
 
-        int courseID = (int) courseIDObj;
+        List<Course> takenCourses = getTakenCoursesFromTable();
+        List<Course> mandatoryCourses = courseDAO.getMandatoryCourses(departmentID, classlevel, semesterID);
 
-        // Daha önce eklenip eklenmediğini kontrol et
-        DefaultTableModel studentCourseModel = (DefaultTableModel) studentCourseTable.getModel();
-        for (int i = 0; i < studentCourseModel.getRowCount(); i++) {
-            Object takenCourseIDObj = studentCourseModel.getValueAt(i, 0);
-            if (takenCourseIDObj != null && (int) takenCourseIDObj == courseID) {
-                JOptionPane.showMessageDialog(this, "This course has already been selected.");
-                return; // Ders zaten eklendiyse metottan çık
-            }
-        }
-
-        // Devam eden işlemler
-        System.out.println("Selected Row: " + selectedCourseRow);
-        System.out.println("Course Table Row Count: " + courseTable.getRowCount());
-        System.out.println("Course ID Object: " + courseIDObj);
-
-        Course course1 = courseDAO.getByID(courseID);
-        if (course1 == null) {
-            JOptionPane.showMessageDialog(this, "Course details not found. Please reload the data.");
+        if (studentService.isCourseAlreadyTaken(courseID, takenCourses)) {
+            JOptionPane.showMessageDialog(this, "This course has already been selected.");
             return;
         }
 
         // Seçilen dersin sınıf, fakülte ve dönem bilgisi
-        int courseClassLevel = course1.getClassLevel();
-        int courseDepartmentID = course1.getDepartmentID();
-        int courseSemesterID = course1.getSemesterID();
+        int courseClassLevel = selectedCourse.getClassLevel();
+        int courseDepartmentID = selectedCourse.getDepartmentID();
+        int courseSemesterID = selectedCourse.getSemesterID();
 
         // Öğrencinin kendi sınıfı, fakültesi ve dönemi
         int studentClassLevel = classlevel;
         int studentDepartmentID = departmentID;
         int studentSemesterID = semesterID;
 
-        // Zorunlu ders kontrolü
-        if (courseClassLevel != studentClassLevel || courseDepartmentID != studentDepartmentID || courseSemesterID != studentSemesterID) {
-            List<Course> mandatoryCourses = courseDAO.getMandatoryCourses(studentDepartmentID, studentClassLevel, studentSemesterID);
+        if (courseClassLevel != studentClassLevel
+                || courseDepartmentID != studentDepartmentID
+                || courseSemesterID != studentSemesterID) {
 
-            for (Course course : mandatoryCourses) {
-                boolean courseTaken = false;
-                for (int i = 0; i < studentCourseModel.getRowCount(); i++) {
-                    Object takenCourseIDObj = studentCourseModel.getValueAt(i, 0);
-                    if (takenCourseIDObj != null && (int) takenCourseIDObj == course.getCourseID()) {
-                        courseTaken = true;
-                        break;
-                    }
-                }
-                if (!courseTaken) {
-                    JOptionPane.showMessageDialog(this, "You must first take all courses from your department, class level, and semester before selecting courses from other levels or semesters.");
-                    return;
-                }
+            if (!studentService.isMandatoryCoursesCompleted(mandatoryCourses, takenCourses)) {
+                JOptionPane.showMessageDialog(this,
+                        "You must first take all mandatory courses from your department, class level, and semester.");
+                return;
             }
         }
 
-        // Kredi kontrolü
-        Object courseCreditsObj = courseTable.getValueAt(selectedCourseRow, 2);
-        if (courseCreditsObj == null || !(courseCreditsObj instanceof Integer)) {
-            JOptionPane.showMessageDialog(this, "Invalid course credits. Please try again.");
-            return;
-        }
-        int courseCredits = (int) courseCreditsObj;
-        int totalCredits = calculateTotalCredits() + courseCredits;
-
-        if (totalCredits > studentCretid) {
-            JOptionPane.showMessageDialog(this, "Credit limit exceeded. Cannot add this course.");
+        if (!studentService.isCreditWithinLimit(takenCourses, selectedCourse, studentCretid)) {
+            JOptionPane.showMessageDialog(this, "Credit limit exceeded.");
             return;
         }
 
-        // Ders ekleme
-        studentCourseModel.addRow(new Object[]{
-            courseID,
-            courseTable.getValueAt(selectedCourseRow, 1), // Ders adı
-            courseCredits
+        // 4. Ekleme işlemi
+        ((DefaultTableModel) studentCourseTable.getModel()).addRow(new Object[]{
+            selectedCourse.getCourseID(),
+            selectedCourse.getCourseName(),
+            selectedCourse.getCredits()
         });
 
-        // Toplam krediyi güncelle
+        List<Course> takenCoursesUpdate = getTakenCoursesFromTable();  // tabloyu okuyor
+        int totalCredits = studentService.calculateTotalCredits(takenCoursesUpdate);
         jTextField3.setText(String.valueOf(totalCredits));
         JOptionPane.showMessageDialog(this, "Course added successfully.");
+
+    }
+
+    private List<Course> getTakenCoursesFromTable() {
+        List<Course> list = new ArrayList<>();
+        DefaultTableModel model = (DefaultTableModel) studentCourseTable.getModel();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            int id = (int) model.getValueAt(i, 0);
+            Course c = courseDAO.getByID(id);
+            if (c != null) {
+                list.add(c);
+            }
+        }
+        return list;
     }
 
     @SuppressWarnings("unchecked")
@@ -224,7 +196,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
         jButSave = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JSeparator();
-        jButton1Add = new javax.swing.JButton();
+        ButtonAdd = new javax.swing.JButton();
         jTextField2 = new javax.swing.JTextField();
         jScrollPane3 = new javax.swing.JScrollPane();
         courseTable = new javax.swing.JTable();
@@ -271,10 +243,10 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
         jSeparator1.setBackground(new java.awt.Color(0, 0, 0));
         jSeparator1.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
-        jButton1Add.setText("Add Course");
-        jButton1Add.addActionListener(new java.awt.event.ActionListener() {
+        ButtonAdd.setText("Add Course");
+        ButtonAdd.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1AddActionPerformed(evt);
+                ButtonAddActionPerformed(evt);
             }
         });
 
@@ -306,7 +278,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4, javax.swing.GroupLayout.DEFAULT_SIZE, 138, Short.MAX_VALUE)
                     .addComponent(jButSave, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton1Add, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(ButtonAdd, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(15, 15, 15))
         );
         jPanel2Layout.setVerticalGroup(
@@ -333,7 +305,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
                         .addGap(16, 16, 16)
                         .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton1Add, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(ButtonAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(16, Short.MAX_VALUE))
         );
 
@@ -467,6 +439,15 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
             return;
         }
 
+        List<Course> takenCourses = getTakenCoursesFromTable();
+        List<Course> mandatoryCourses = courseDAO.getMandatoryCourses(departmentID, classlevel, semesterID);
+
+        if (!studentService.isMandatoryCoursesCompleted(mandatoryCourses, takenCourses)) {
+            JOptionPane.showMessageDialog(this,
+                    "You must first take all mandatory courses from your department, class level, and semester.");
+            return;
+        }
+
         int totalCredits = calculateTotalCredits();
         int studentCreditLimit = studentCretid;
 
@@ -485,7 +466,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
         for (int i = 0; i < studentCourseModel.getRowCount(); i++) {
             int courseID = (int) studentCourseModel.getValueAt(i, 0);
             boolean success = courseDAO.addStudentCourse(studentID, courseID);
-              System.out.println("lesson added to"+studentID);
+            System.out.println("lesson added to" + studentID);
             if (!success) {
                 JOptionPane.showMessageDialog(this, "Failed to save course: " + studentCourseModel.getValueAt(i, 1));
                 return;
@@ -513,16 +494,17 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
 
     }//GEN-LAST:event_studentCourseTableMouseClicked
 
-    private void jButton1AddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1AddActionPerformed
+    private void ButtonAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ButtonAddActionPerformed
+
         addCourse();
-    }//GEN-LAST:event_jButton1AddActionPerformed
+    }//GEN-LAST:event_ButtonAddActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton ButtonAdd;
     private javax.swing.JTable courseTable;
     private javax.swing.JButton jButQuery;
     private javax.swing.JButton jButSave;
-    private javax.swing.JButton jButton1Add;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<String> jComboBox4;
     private javax.swing.JComboBox<Semester> jComboBox5;
@@ -546,7 +528,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
     public void onPageSetted() {
         Object account = MainFrame.instance.getAccount();
         if (account instanceof Student student) {
-            
+
             this.studentID = student.getStudentID();
             this.classlevel = student.getClassLevel();
             this.departmentID = student.getDepartmentID();
@@ -554,7 +536,7 @@ public class StudentCourseAdding extends javax.swing.JPanel implements IPage {
             this.studentCretid = student.getCredits();
             loadSemesters();
             jTextField2.setText(departmentDAO.getByID(departmentID).getDepartmentName());
-            jTextField1.setText(studentCretid+"");
+            jTextField1.setText(studentCretid + "");
             System.out.println(studentID);
 
             DefaultTableModel studentCourseModel = (DefaultTableModel) studentCourseTable.getModel();

@@ -20,6 +20,7 @@ import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -132,6 +133,39 @@ public class StudentService {
 
     public List<Student> getAllStudents() {
         return studentDAO.getAll();
+    }
+    
+    
+    
+     public int calculateTotalCredits(List<Course> selectedCourses) {
+        if (selectedCourses == null) return 0;
+        return selectedCourses.stream()
+                .filter(Objects::nonNull)
+                .mapToInt(Course::getCredits)
+                .sum();
+    }
+    
+    public boolean isMandatoryCoursesCompleted(List<Course> mandatoryCourses, List<Course> takenCourses) {
+    if (mandatoryCourses == null || takenCourses == null) return false;
+
+    for (Course mandatory : mandatoryCourses) {
+        boolean found = takenCourses.stream()
+                .anyMatch(taken -> taken.getCourseID() == mandatory.getCourseID());
+        if (!found) {
+            return false;
+        }
+    }
+    return true;
+}
+
+
+    public boolean isCreditWithinLimit(List<Course> takenCourses, Course newCourse, int maxCredits) {
+        int total = takenCourses.stream().mapToInt(Course::getCredits).sum() + newCourse.getCredits();
+        return total <= maxCredits;
+    }
+
+    public boolean isCourseAlreadyTaken(int courseID, List<Course> takenCourses) {
+        return takenCourses.stream().anyMatch(c -> c.getCourseID() == courseID);
     }
     
 }

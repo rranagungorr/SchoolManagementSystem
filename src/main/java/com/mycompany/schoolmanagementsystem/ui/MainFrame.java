@@ -112,7 +112,7 @@ public class MainFrame extends javax.swing.JFrame {
     private final AcademicCalendar calendarFall;
 
     private final LoginPanel loginPanel;
-    private final StudentMainPanel studentMainPanel;
+    //private final StudentMainPanel studentMainPanel;
     private final StudentCourseList studentCourseList;
     private final StudentExamList studentExamList;
     private final StudentAttendanceList studentAttendanceList;
@@ -137,7 +137,7 @@ public class MainFrame extends javax.swing.JFrame {
         initComponents();
 
         loginPanel = new LoginPanel();
-        studentMainPanel = new StudentMainPanel();
+        //studentMainPanel = new StudentMainPanel();
         studentCourseList = new StudentCourseList();
         studentExamList = new StudentExamList();
         studentAttendanceList = new StudentAttendanceList();
@@ -307,10 +307,5 @@ public class MainFrame extends javax.swing.JFrame {
     private javax.swing.JPanel mainPanel;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * @return the studentMainPanel
-     */
-    public StudentMainPanel getStudentMainPanel() {
-        return studentMainPanel;
-    }
+   
 }
