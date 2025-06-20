@@ -21,7 +21,9 @@ import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -37,6 +39,7 @@ public class InstructorService {
       CourseDAO courseDAO;
     private ExamResultDAO examResultDAO;
     private StudentExamDAO studentExamDAO;
+   
 
     public InstructorService() {
         this.instructorDAO = new InstructorDAO();
@@ -46,6 +49,12 @@ public class InstructorService {
         this.courseDAO = new CourseDAO();
         this.examResultDAO = new ExamResultDAO();
         this.studentExamDAO = new StudentExamDAO();
+    }
+    
+     public InstructorService(StudentExamDAO studentExamDAO, ExamResultDAO examResultDAO) {
+        this.studentExamDAO = studentExamDAO;
+        this.examResultDAO = examResultDAO;
+       
     }
 
     // ----------- Scheduling a Course -----------
@@ -66,47 +75,28 @@ public class InstructorService {
         return attendanceDAO.create(attendance);
     }
 
-    // Update attendance if needed
-    public boolean updateAttendanceStatus(int attendanceID, String newStatus) {
-        Attendance record = attendanceDAO.getByID(attendanceID);
-        if (record == null) {
-            return false;
+    
+
+    public void updateAttendanceStatus(Map<LocalDate, String> attendanceStatusMap, List<LocalDate> selectedDates, String status) {
+        if (selectedDates == null || selectedDates.isEmpty()) {
+            return;
         }
-        record.setStatus(newStatus);
-        return attendanceDAO.update(record);
+
+        for (LocalDate date : selectedDates) {
+            attendanceStatusMap.put(date, status);
+        }
     }
 
+
+
     // ----------- Enter Exam Results -----------
-    public int enterExamResult(int studentID, int examID, double score) {
-        // 1) Ensure there's a StudentExam record
-        //    If not, create one or handle logic differently
-        // For simplicity, let's assume we create it if not exist
-        // (In a real system, you might check or require a prior enrollment step.)
-
-        // Check if StudentExam record exists:
-        List<StudentExam> allStudentExams = studentExamDAO.getAll();
-        StudentExam existing = allStudentExams.stream()
-                .filter(se -> se.getStudentID() == studentID && se.getExamID() == examID)
-                .findFirst()
-                .orElse(null);
-
-        if (existing == null) {
-            // create
-            existing = new StudentExam();
-            existing.setStudentID(studentID);
-            existing.setExamID(examID);
-            int newID = studentExamDAO.create(existing);
-            if (newID <= 0) {
-                return 0; // fail
-            }
-            existing.setStudentExamID(newID);
+    public boolean assignScoreToStudent(int studentID, int courseID, int score) {
+        if (score < 0 || score > 100) {
+            throw new IllegalArgumentException("Score must be between 0 and 100.");
         }
 
-        // 2) Now create an ExamResult for the found or created StudentExam
-        ExamResult er = new ExamResult();
-        er.setStudentExamID(existing.getStudentExamID());
-        er.setScore(score);
-        return examResultDAO.create(er);
+        int examID = studentExamDAO.getExamIDByCourseAndStudent(courseID, studentID);
+        return examResultDAO.assignScore(studentID, examID, score);
     }
 
     // ----------- List Students in a Course -----------

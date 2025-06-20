@@ -16,6 +16,7 @@ import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Semester;
+import com.mycompany.schoolmanagementsystem.service.AdminService;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
@@ -34,6 +35,8 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
     private ClassroomDAO classroomDAO;
     private InstructorDAO instructorDAO;
     private DepartmentDAO departmentDAO;
+    private ExamDAO examDAO;
+    private AdminService adminService;
 
     public AdminManageExam() {
         initComponents();
@@ -42,6 +45,8 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
         this.classroomDAO = new ClassroomDAO();
         this.instructorDAO = new InstructorDAO();
         this.departmentDAO = new DepartmentDAO();
+        this.examDAO = new ExamDAO();
+        this.adminService = new AdminService();
         loadExamsIntoTable();
     }
 
@@ -319,7 +324,6 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
         return true; // Geçerli tarih
     }
 
-
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
         addExam();
@@ -377,7 +381,6 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
         }
 
         // 4. ExamDAO kullanarak sınavı sil
-        ExamDAO examDAO = new ExamDAO();
         try {
             boolean deleted = examDAO.delete(examID);
             if (deleted) {
@@ -401,16 +404,13 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
 
     private void addExam() {
         try {
-            int selectedIndex = coursejList1.getSelectedIndex(); // Seçili satırın indeksini al
+            int selectedIndex = coursejList1.getSelectedIndex();
             if (selectedIndex < 0) {
-                System.out.println("No course selected.");
                 JOptionPane.showMessageDialog(this, "Please select a course from the list.");
                 return;
             }
 
-            Course selectedCourse = coursejList1.getSelectedValue(); // Seçili öğeyi al
-
-            // Invigilator (Instructor) ve Classroom seçimini kontrol et
+            Course selectedCourse = coursejList1.getSelectedValue();
             Instructor selectedInstructor = (Instructor) jComboBox1.getSelectedItem();
             Classroom selectedClassroom = (Classroom) jComboBox2.getSelectedItem();
 
@@ -419,7 +419,6 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
                 return;
             }
 
-            // Exam türü ve tarih doğrulaması
             String examType = (String) jComboBox6.getSelectedItem();
             java.util.Date selectedDate = jDateChooser1.getDate();
 
@@ -428,32 +427,31 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
                 return;
             }
 
-            // Tarih aralığı kontrolü
-            if (examType.equals("Midterm")) {
-                if (!validateDateRange(selectedDate, "2024-11-04", "2025-01-03")) {
-                    return; // Geçersiz tarih, işlem durduruluyor
-                }
-            } else if (examType.equals("Final")) {
-                if (!validateDateRange(selectedDate, "2025-01-13", "2025-01-25")) {
-                    return; // Geçersiz tarih, işlem durduruluyor
-                }
+            // AdminService üzerinden kontrol yap
+            if (!adminService.validateExamDate(selectedDate, examType)) {
+                JOptionPane.showMessageDialog(this,
+                        "Selected date is out of range for this exam type!",
+                        "Invalid Date", JOptionPane.WARNING_MESSAGE);
+                jDateChooser1.setDate(null); // Tarihi sıfırla
+                return;
             }
 
-            // Exam adını oluştur
             String examName = selectedCourse.getCourseName() + " - " + examType;
 
-            // Sınavın zaten var olup olmadığını kontrol et
             ExamDAO examDAO = new ExamDAO();
-            boolean exists = examDAO.isExamExists(selectedCourse.getCourseID(), selectedDate, selectedClassroom.getClassroomID());
+            boolean exists = examDAO.isExamExists(
+                    selectedCourse.getCourseID(),
+                    selectedDate,
+                    selectedClassroom.getClassroomID());
+
             if (exists) {
                 JOptionPane.showMessageDialog(this, "This exam already exists!");
-                return; // Sınav zaten mevcut, işlem durduruluyor
+                return;
             }
 
-            // Yeni Exam oluştur ve veritabanına ekle
             Exam newExam = new Exam();
             newExam.setExamName(examName);
-            newExam.setExamDate(new java.sql.Date(selectedDate.getTime())); // java.sql.Date'e dönüştür
+            newExam.setExamDate(new java.sql.Date(selectedDate.getTime()));
             newExam.setCourseID(selectedCourse.getCourseID());
             newExam.setInvigilatorID(selectedInstructor.getInstructorID());
             newExam.setClassroomID(selectedClassroom.getClassroomID());
@@ -462,7 +460,7 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
 
             if (generatedID > 0) {
                 JOptionPane.showMessageDialog(this, "Exam added successfully! ID: " + generatedID);
-                loadExamsIntoTable(); // Tabloda yeni sınavı göster
+                loadExamsIntoTable();
             } else {
                 JOptionPane.showMessageDialog(this, "Failed to add exam.");
             }
@@ -473,7 +471,7 @@ public class AdminManageExam extends javax.swing.JPanel implements IPage {
     }
 
     private void loadExamsIntoTable() {
-        ExamDAO examDAO = new ExamDAO();
+
         List<Exam> examList = examDAO.getAll();
 
         String[] columnNames = {"Exam ID", "Exam Name", "Exam Date", "Course Name", "Instructor", "Classroom"};

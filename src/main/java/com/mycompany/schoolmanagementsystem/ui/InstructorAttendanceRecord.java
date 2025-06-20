@@ -14,6 +14,7 @@ import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Semester;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import com.mycompany.schoolmanagementsystem.service.AdminService;
+import com.mycompany.schoolmanagementsystem.service.InstructorService;
 import java.awt.Color;
 import java.awt.Component;
 import java.sql.PreparedStatement;
@@ -44,6 +45,7 @@ public class InstructorAttendanceRecord extends javax.swing.JPanel implements IP
     private StudentDAO studentDAO;
     private AttendanceDAO attendanceDAO;
     private Map<LocalDate, String> attendanceStatusMap = new HashMap<>();
+    private InstructorService instructorService;
 
     public InstructorAttendanceRecord() {
         initComponents();
@@ -56,6 +58,7 @@ public class InstructorAttendanceRecord extends javax.swing.JPanel implements IP
         this.courseDAO = new CourseDAO();
         this.studentDAO = new StudentDAO();
         this.attendanceDAO = new AttendanceDAO();
+        this.instructorService = new InstructorService();
 
     }
 
@@ -153,40 +156,40 @@ public class InstructorAttendanceRecord extends javax.swing.JPanel implements IP
         );
     }
 
-    private void updateAttendanceStatus(String status) {
-        List<LocalDate> selectedDates = scheduleList.getSelectedValuesList();
-        if (selectedDates.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please select at least one schedule date.");
-            return;
-        }
-
-        // Seçilen tarihlerin durumunu güncelle
-        for (LocalDate date : selectedDates) {
-            attendanceStatusMap.put(date, status);
-        }
-
-        // JList'in render işlemini güncelle
-        scheduleList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                LocalDate date = (LocalDate) value;
-                String dateStatus = attendanceStatusMap.get(date);
-
-                if ("Attend".equalsIgnoreCase(dateStatus)) {
-                    label.setBackground(Color.GREEN);
-                } else if ("Not Attend".equalsIgnoreCase(dateStatus)) {
-                    label.setBackground(Color.RED);
-                } else {
-                    label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
-                }
-
-                return label;
-            }
-        });
-
-        scheduleList.repaint();
+   private void updateAttendanceStatus(String status) {
+    List<LocalDate> selectedDates = scheduleList.getSelectedValuesList();
+    
+    if (selectedDates == null || selectedDates.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Please select at least one schedule date.");
+        return;
     }
+
+    // TEST EDİLEBİLİR KISIM – Service'e aktarılmıştır
+    instructorService.updateAttendanceStatus(attendanceStatusMap, selectedDates, status);
+
+    // UI Render işlemi
+    scheduleList.setCellRenderer(new DefaultListCellRenderer() {
+        @Override
+        public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+            JLabel label = (JLabel) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            LocalDate date = (LocalDate) value;
+            String dateStatus = attendanceStatusMap.get(date);
+
+            if ("Attend".equalsIgnoreCase(dateStatus)) {
+                label.setBackground(Color.GREEN);
+            } else if ("Not Attend".equalsIgnoreCase(dateStatus)) {
+                label.setBackground(Color.RED);
+            } else {
+                label.setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
+            }
+
+            return label;
+        }
+    });
+
+    scheduleList.repaint();
+}
+
 
     private void resetSelection() {
         // Seçimleri temizle
@@ -520,11 +523,11 @@ public class InstructorAttendanceRecord extends javax.swing.JPanel implements IP
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void jButAttendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButAttendActionPerformed
-        updateAttendanceStatus("attend"); // "attend" olarak kaydedilir
+        updateAttendanceStatus("Attend"); // "attend" olarak kaydedilir
     }//GEN-LAST:event_jButAttendActionPerformed
 
     private void jButNotAttendActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButNotAttendActionPerformed
-        updateAttendanceStatus("not attend"); // "not attend" olarak kaydedilir
+        updateAttendanceStatus("Not Attend"); // "not attend" olarak kaydedilir
     }//GEN-LAST:event_jButNotAttendActionPerformed
 
     private void courseTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_courseTableMouseClicked

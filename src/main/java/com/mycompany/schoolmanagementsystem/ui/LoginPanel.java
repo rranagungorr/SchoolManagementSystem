@@ -133,9 +133,7 @@ public class LoginPanel extends javax.swing.JPanel implements IPage {
 
     private void loginbtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_loginbtnActionPerformed
         // TODO add your handling code here:
-
-       
-
+        
         // Tarihi LocalDate'e dönüştür
         if (selectedDate != null) {
             LocalDate localDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();

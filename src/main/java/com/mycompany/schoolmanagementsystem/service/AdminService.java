@@ -18,6 +18,7 @@ import com.mycompany.schoolmanagementsystem.management.Department;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
@@ -169,7 +170,7 @@ public class AdminService {
     }
 
     // ----------- Course Management -----------
-    public int createCourse(String courseName, String courseCode, int credits, int departmentID, Integer instructorID,
+    public int createCourse(String courseName, String courseCode, int credits, int departmentID, Integer instructorID, //  bu varrrrr
             int classroomID, int hours, int semesterID, String startTime, String endTime,
             String weekDay, int classlevel) {
         Course c = new Course();
@@ -331,7 +332,7 @@ public class AdminService {
         return studentDAO.create(s);
     }
 
-    public boolean addInstructorToCourse(int courseID, int instructorID) {
+    public boolean addInstructorToCourse(int courseID, int instructorID) {            // bu varr
         String query = "INSERT INTO courseInstructors (CourseID, InstructorID) VALUES (?, ?)";
         try ( Connection connection = DBUtil.getConnection();  PreparedStatement preparedStatement = connection.prepareStatement(query)) {
             preparedStatement.setInt(1, courseID);
@@ -487,7 +488,7 @@ public class AdminService {
                 }
             }
         }
-    }
+    } 
 
     // ... Additional instructor-related methods, e.g., update, delete
     // ----------- Admin Management (itself) -----------
@@ -506,6 +507,22 @@ public class AdminService {
     public boolean deleteStudent(int studentID) {
         studentDAO.delete(studentID);
         return true;
+    }
+
+// AdminService.java içine eklenir
+    public boolean validateDateRange(java.util.Date selectedDate, String startDateStr, String endDateStr) {
+        Date startDate = Date.valueOf(startDateStr);
+        Date endDate = Date.valueOf(endDateStr);
+        return !(selectedDate.before(startDate) || selectedDate.after(endDate));
+    } 
+
+    public boolean validateExamDate(java.util.Date selectedDate, String examType) {
+        if ("Midterm".equals(examType)) {
+            return validateDateRange(selectedDate, "2024-11-04", "2025-01-03");
+        } else if ("Final".equals(examType)) {
+            return validateDateRange(selectedDate, "2025-01-13", "2025-01-25");
+        }
+        return false;
     }
 
 }

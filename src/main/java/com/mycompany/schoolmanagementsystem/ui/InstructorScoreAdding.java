@@ -12,6 +12,7 @@ import com.mycompany.schoolmanagementsystem.examsys.Exam;
 import com.mycompany.schoolmanagementsystem.management.Course;
 import com.mycompany.schoolmanagementsystem.management.Instructor;
 import com.mycompany.schoolmanagementsystem.management.Student;
+import com.mycompany.schoolmanagementsystem.service.InstructorService;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -22,26 +23,27 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Merve
  */
-public class InstructorScoreAdding extends javax.swing.JPanel implements IPage{
+public class InstructorScoreAdding extends javax.swing.JPanel implements IPage {
 
-   
     private CourseDAO courseDAO;
     private StudentExamDAO studentExamDAO;
     private ExamResultDAO examResultDAO;
     private ExamDAO examDAO;
+    private InstructorService instructorService;
 
     int instructorID;
 
     public InstructorScoreAdding() {
         initComponents();
-         this.courseDAO = new CourseDAO();
+        this.courseDAO = new CourseDAO();
         this.studentExamDAO = new StudentExamDAO();
         this.examResultDAO = new ExamResultDAO();
         this.examDAO = new ExamDAO();
+        this.instructorService = new InstructorService();
         loadCourses();
     }
-    
-     private void loadCourses() {
+
+    private void loadCourses() {
         List<Course> courses = courseDAO.getCoursesByInstructorID(instructorID);
         DefaultTableModel courseModel = (DefaultTableModel) courseTable.getModel();
         courseModel.setRowCount(0);
@@ -58,24 +60,24 @@ public class InstructorScoreAdding extends javax.swing.JPanel implements IPage{
             studentModel.addRow(new Object[]{student.getStudentID(), student.getName(), student.getSurname()});
         }
     }
+
     private void loadExamsForSelectedCourse(int courseID) {
-    List<Exam> exams = examDAO.getExamsByCourseID(courseID);
-    DefaultTableModel examModel = (DefaultTableModel) examTable.getModel();
-    examModel.setRowCount(0);
-    for (Exam exam : exams) {
-        examModel.addRow(new Object[]{exam.getExamID(), exam.getExamName(), exam.getExamDate()});
+        List<Exam> exams = examDAO.getExamsByCourseID(courseID);
+        DefaultTableModel examModel = (DefaultTableModel) examTable.getModel();
+        examModel.setRowCount(0);
+        for (Exam exam : exams) {
+            examModel.addRow(new Object[]{exam.getExamID(), exam.getExamName(), exam.getExamDate()});
+        }
     }
-}
 
-private void loadStudentsForSelectedExam(int examID) {
-    List<Student> students = studentExamDAO.getStudentsByExamID(examID);
-    DefaultTableModel studentModel = (DefaultTableModel) studentTable.getModel();
-    studentModel.setRowCount(0);
-    for (Student student : students) {
-        studentModel.addRow(new Object[]{student.getStudentID(), student.getName(), student.getSurname()});
+    private void loadStudentsForSelectedExam(int examID) {
+        List<Student> students = studentExamDAO.getStudentsByExamID(examID);
+        DefaultTableModel studentModel = (DefaultTableModel) studentTable.getModel();
+        studentModel.setRowCount(0);
+        for (Student student : students) {
+            studentModel.addRow(new Object[]{student.getStudentID(), student.getName(), student.getSurname()});
+        }
     }
-}
-
 
     private void assignScore() {
         int selectedCourseRow = courseTable.getSelectedRow();
@@ -106,15 +108,17 @@ private void loadStudentsForSelectedExam(int examID) {
 
         int studentID = (int) studentTable.getValueAt(selectedStudentRow, 0);
         int courseID = (int) courseTable.getValueAt(selectedCourseRow, 0);
-        int examID = studentExamDAO.getExamIDByCourseAndStudent(courseID, studentID);
 
-       
-        boolean success = examResultDAO.assignScore(studentID, examID, score);
-        if (success) {
-            JOptionPane.showMessageDialog(this, "Score assigned successfully.");
-            scoreTextField.setText("");
-        } else {
-            JOptionPane.showMessageDialog(this, "Failed to assign score.");
+        try {
+            boolean success = instructorService.assignScoreToStudent(studentID, courseID, score);
+            if (success) {
+                JOptionPane.showMessageDialog(this, "Score assigned successfully.");
+                scoreTextField.setText("");
+            } else {
+                JOptionPane.showMessageDialog(this, "Failed to assign score.");
+            }
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage());
         }
     }
 
@@ -259,11 +263,11 @@ private void loadStudentsForSelectedExam(int examID) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      assignScore();
+        assignScore();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void courseTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_courseTableMouseClicked
-         int selectedRow = courseTable.getSelectedRow();
+        int selectedRow = courseTable.getSelectedRow();
         if (selectedRow != -1) {
             int courseID = (int) courseTable.getValueAt(selectedRow, 0);
             loadExamsForSelectedCourse(courseID);
@@ -272,10 +276,10 @@ private void loadStudentsForSelectedExam(int examID) {
 
     private void examTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_examTableMouseClicked
         int selectedRow = examTable.getSelectedRow();
-    if (selectedRow != -1) {
-        int examID = (int) examTable.getValueAt(selectedRow, 0); // ExamID'nin doğru alındığını kontrol edin
-loadStudentsForSelectedExam(examID); // Doğru ExamID'yi fonksiyona gönderin
-    }
+        if (selectedRow != -1) {
+            int examID = (int) examTable.getValueAt(selectedRow, 0); // ExamID'nin doğru alındığını kontrol edin
+            loadStudentsForSelectedExam(examID); // Doğru ExamID'yi fonksiyona gönderin
+        }
     }//GEN-LAST:event_examTableMouseClicked
 
 
@@ -292,7 +296,7 @@ loadStudentsForSelectedExam(examID); // Doğru ExamID'yi fonksiyona gönderin
     private javax.swing.JTextField scoreTextField;
     private javax.swing.JTable studentTable;
     // End of variables declaration//GEN-END:variables
-  
+
     @Override
     public void onPageSetted() {
         Object account = MainFrame.instance.getAccount();
@@ -301,7 +305,5 @@ loadStudentsForSelectedExam(examID); // Doğru ExamID'yi fonksiyona gönderin
             loadCourses();
         }
     }
-
-
 
 }
